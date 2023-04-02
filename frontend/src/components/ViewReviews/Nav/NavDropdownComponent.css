@@ -1,0 +1,28 @@
+.basic-single {
+    position: relative;
+    box-sizing: border-box;
+    width: 200px;
+}
+  
+.select__input-container {
+    color: inherit;
+    background: center;
+    font-size: 1rem;
+    opacity: 0;
+    width: 100%;
+    grid-area: 1 / 2 / auto / auto;
+    font: inherit;
+    min-width: 2px;
+    border: 0;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+}
+
+.basic-single input {
+    font-size: "1rem";
+}
+
+.college-select {
+    font-size: 1rem;
+}

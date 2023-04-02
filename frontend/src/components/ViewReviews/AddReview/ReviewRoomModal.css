@@ -1,0 +1,158 @@
+.submit-review-container {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+  }
+  
+.submit-review-form-container {
+    width: 100%;
+    padding: 3% 4% 3% 4%;
+    margin: 0 auto;
+}
+
+.submit-review-header-text{
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0px;
+    color:#0053c5;
+}
+
+.submit-review-header-subtext{
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #6e6e6e;
+}
+
+.question-title{
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.photo-upload-title{
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+
+.question-subtext{
+    font-size: 14px;
+    color: #6e6e6e;
+    font-weight: 400;
+}
+
+.line-block{
+    display: block;
+    height: 0.5px;
+    border-color: #0053c5;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+    margin-left: auto;
+    margin-right: auto;
+    border-width: 0.2px;
+}
+
+.photo-upload-button{
+    padding: 8px 12px;
+    font-size: 8pt;
+    border-radius: 2px;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+
+.custom-file-upload {
+    background-color: transparent;
+    border-radius: 8px;
+    color: #0053c5;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition: all 0.3s ease-out;
+}
+
+.custom-file-upload > svg{
+    width: 20px;
+    height: 20px;
+    margin: 0px;
+}
+
+input[type=file]::file-selector-button {
+    border: 0.75px solid #0053c5;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #fff;
+    color: #0053c5;
+    transition: 1s;
+    font-size: medium;
+    font-weight: 400;
+}
+
+input[type=file]::file-selector-button:hover {
+    background-color: #0053c5;
+    color: #fff;
+    border: 1.75px solid #0053c5;
+}
+
+.slider{
+    margin-left: 5%;
+}
+
+.mantine-Autocomplete-label, .mantine-Textarea-label {
+    display: inline-block;
+    margin-bottom: 4px;
+    color: #000;
+    font-size: 1.1rem;
+    font-weight: 600;
+    word-break: break-word;
+    cursor: default;
+}
+
+.slider-container{
+    margin-top: 3%;
+    margin-bottom: 4%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.mantine-Autocomplete-root{
+    margin-bottom: 1%;
+}
+
+.review-received-image{
+    width: 30%;
+}
+
+.align-right{
+    margin-right: 0px;
+    margin-left: auto;
+}
+
+.submit-button-container{
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* For small screens */
+@media (max-width: 768px) {
+    .slider-container {
+        width: 90%;
+        margin: 0 auto;
+        
+    }
+
+    .mantine-Slider-root {
+        width: 99%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .mantine-Slider-markLabel {
+        font-size: 7.5pt;      
+    }
+}
+
+@media (max-width: 300px) {
+    .mantine-Slider-markLabel {
+        font-size: 7pt;      
+    }
+}

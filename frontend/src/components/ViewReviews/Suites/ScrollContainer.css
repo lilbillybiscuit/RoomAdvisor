@@ -1,0 +1,35 @@
+* {
+    text-align:left;
+}
+
+body,
+mbsc-page>.mbsc-page {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: visible;
+}
+
+.md-paging,
+.md-paging>div,
+.md-paging .md-page {
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+.md-paging .md-list-cont,
+.md-paging .mbsc-scv-item>.mbsc-lv-cont {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 auto;
+    -ms-flex: 1 auto;
+    flex: 1 auto;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.md-paging .mbsc-lv-img {
+    pointer-events: none;
+    border-radius: 2.8em;
+    height: 2.8em;
+}

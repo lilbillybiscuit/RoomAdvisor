@@ -1,0 +1,4 @@
+.multi-select-container {
+    display: flex;
+    max-width: 400px;
+}

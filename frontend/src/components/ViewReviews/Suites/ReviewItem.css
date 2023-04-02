@@ -1,0 +1,22 @@
+.review-container{
+    text-align: left;
+}
+
+.subtext{
+    font-size: 11pt;
+    display: inline
+}
+
+.review-container > p{
+    font-size: 10pt;
+}
+
+.year{
+    font-weight: 800;
+    font-size: 11pt;
+    display: inline
+}
+
+.small-badge{
+    padding: 5px;
+}

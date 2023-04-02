@@ -1,0 +1,18 @@
+.pictures-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+}
+
+.pic-inner-container {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.pic {
+    display: flex;
+    z-index: 1;
+}

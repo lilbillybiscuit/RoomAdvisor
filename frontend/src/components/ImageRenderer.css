@@ -1,0 +1,40 @@
+img {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+.image-container {
+    background-color: #ccc;
+    overflow: hidden;
+    position: relative;
+    max-width: 800px;
+    margin: 0 0;
+    border-radius: 8px;
+}
+
+.image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    z-index: 0;
+}
+
+.image.thumb {
+    opacity: 1;
+    filter: blur(10px);
+    transition: opacity 1s ease-in-out;
+    position: relative;
+    z-index: 0;
+}
+
+.image.hidden {
+    display: none;
+}
+
+.image.isLoaded {
+    opacity: 1;
+    z-index: 0;
+}

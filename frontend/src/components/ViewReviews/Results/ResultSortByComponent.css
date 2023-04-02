@@ -1,0 +1,30 @@
+.select__control {
+    max-width: 400px;
+}
+
+.select__value-container {
+    width: 300px;
+}
+
+.select__control{
+    font-size: 12px;
+}
+
+.select__control--menu--is--open {
+    font-size: 12px;
+}
+
+.select__value-container--has-valu {
+    width: 200px;
+}
+
+.css-319lph-ValueContainer {
+    width: 100px;
+}
+
+.select__menu {
+    font-size: 12px;
+}
+
+
+  

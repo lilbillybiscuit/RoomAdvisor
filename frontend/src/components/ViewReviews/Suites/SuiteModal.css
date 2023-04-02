@@ -1,0 +1,111 @@
+.suite-modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.suite-modal-header {
+  display: flex;
+  /* 30px is the size of the close button */
+  min-width: 100%;
+  min-height: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: row;
+  justify-content: left;
+  box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+  overflow: hidden;
+}
+
+.suite-modal-title {
+  margin: 0 0;
+  position: relative;
+  top: 10px;
+  left: 50px;
+  font-size: 24pt;
+  font-weight: bold;
+}
+
+.suite-badge-container {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  top: 10px;
+  left: 50px;
+  width: 230px;
+  margin-left: 2%;
+  align-items: baseline;
+}
+
+.suite-modal-header-badge {
+  display: flex;
+  height: 40px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 16pt;
+  padding: 3px 10px;
+  margin-right: 4%;
+}
+
+.modal-icon-badge-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.modal-badge-gray {
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  font-size: 9pt;
+  font-weight: 600;
+  padding: 5px 9px;
+  color: #464646;
+  background: rgb(199 199 199 / 25%);
+  margin-right: 5px;
+  margin-top: 1.5%;
+  align-items: center;
+}
+
+.suite-modal-card-container {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+  overflow: auto;
+}
+
+/* For small screens */
+@media (max-width: 768px) {
+  .suite-modal-header {
+    height: 100px;
+  }
+  
+  .suite-modal-title {
+    left: 15px;
+  }
+
+  .suite-badge-container {
+    top: 15px;
+    left: 20px;
+  }
+}
+
+/* For even small screens */
+@media (max-width: 320px) {
+  .suite-modal-card-container {
+    padding: 5px;
+  }
+
+  .suite-badge-container {
+    width: 222px;
+    margin-left: 0%;
+  }
+
+  .suite-modal-header-badge {
+    font-size: 13pt;
+    padding: 6px 7px;
+  }
+  
+}
