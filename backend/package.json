@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "prod": "pm2 startOrReload ecosystem.config.js",
-    "prodstop": "pm2 stop ecosystem.config.js"
+    "prod": "pm2 startOrReload ecosystem.config.js --env production",
+    "prodstop": "pm2 stop ecosystem.config.js --env production",
+    "beta": "pm2 startOrReload ecosystem.config.js --env beta",
+    "betastop": "pm2 stop ecosystem.config.js --env beta"
   },
   "author": "lilbillybiscuit",
   "license": "ISC",

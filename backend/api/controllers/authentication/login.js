@@ -1,16 +1,7 @@
 
 const passport = require("passport");
 const isBeta = process.env.NODE_ENV === "beta";
-const isProduction = process.env.NODE_ENV === "production" || isBeta;
-var CLIENT_URL = "http://localhost:3000";
-
-if (isProduction) {
-    if (isBeta) {
-        CLIENT_URL = "https://beta.roomadvisor.org";
-    } else {
-        CLIENT_URL = "https://roomadvisor.org";
-    }
-}
+var CLIENT_URL = "http://localhost:3000" || process.env.CLIENT_URL;
 
 exports.loginSuccess = function (request, result) {
     console.log("login success?");
@@ -38,7 +29,7 @@ exports.loginFailed = function (request, result) {
 exports.logout = function (request, result) {
     console.log("here in logout");
     request.logout();
-    result.redirect("http://localhost:3000/logout"); // what...?
+    result.redirect(`${CLIENT_URL}/logout`); // what...?
 }
 
 exports.cas_passport_auth = passport.authenticate("cas", { failureRedirect: "/auth/login/failed" })
