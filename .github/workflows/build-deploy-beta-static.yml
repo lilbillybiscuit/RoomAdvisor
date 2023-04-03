@@ -3,7 +3,7 @@ name: Build and Deploy to S3 Bucket (Beta)
 on:
   push:
     branches:
-      - [main, write-actions]
+      - [main, write_actions]
 
 jobs:
   build-and-deploy-beta:

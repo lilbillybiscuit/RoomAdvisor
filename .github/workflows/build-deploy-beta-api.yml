@@ -3,7 +3,7 @@ name: Deploy Express.js server to EC2 (Beta)
 on:
   push:
     branches:
-      - [main, write-actions]
+      - [main, write_actions]
 
 jobs:
   build-and-deploy-beta-api:
