@@ -40,12 +40,12 @@ jobs:
       - name: Upload to S3 bucket
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --delete --follow-symlinks
-          source_dir: frontend/build/
-          bucket_url: s3://roomadvisorbeta
-          endpoint: s3.us-east-2.amazonaws.com
-          options: --region us-east-2 --no-progress --delete-removed --follow-symlinks
-          extra_args:
+          args: --delete --follow-symlinks --no-progress
+          directory: frontend/build
+          bucket: roomadvisorbeta
+          region: us-east-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Upload index.html to S3 bucket
         run: aws s3 cp frontend/build/index.html s3://roomadvisorbeta
