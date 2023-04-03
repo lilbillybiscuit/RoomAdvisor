@@ -16,7 +16,7 @@ jobs:
       - name: Check Node.js version
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST_BETA }}
+          host: ${{ secrets.EC2_SERVER_BETA }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
@@ -32,7 +32,7 @@ jobs:
       - name: Upload code to EC2
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.EC2_HOST_BETA }}
+          host: ${{ secrets.EC2_SERVER_BETA }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           source: "backend/"
@@ -41,7 +41,7 @@ jobs:
       - name: Configure systemd service
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST_BETA }}
+          host: ${{ secrets.EC2_SERVER_BETA }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
@@ -66,7 +66,7 @@ jobs:
       - name: Enable and start systemd service
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST_BETA }}
+          host: ${{ secrets.EC2_SERVER_BETA }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
