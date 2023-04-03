@@ -14,8 +14,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Update constants.js file
-        run: sed -i 's|http://localhost:4000|https://beta.roomadvisor.io/api|g; s|http://localhost:3000|https://beta.roomadvisor.io|g' frontend/src/constants.js
-
+        run: sed -i 's|http://localhost:4000|$API_URL|g; s|http://localhost:3000|$STATIC_URL|g' frontend/src/constants.js
+        env:
+          API_URL: https://beta.roomadvisor.io/api
+          STATIC_URL: https://beta.roomadvisor.io
       - name: Setup Node.js environment
         uses: actions/setup-node@v2
         with:
