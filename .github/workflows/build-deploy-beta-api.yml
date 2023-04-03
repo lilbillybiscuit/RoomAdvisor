@@ -38,6 +38,15 @@ jobs:
           source: "backend/"
           target: "/home/ubuntu/"
 
+      - name: Start/Restart with pm2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_SERVER_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          script: |
+            cd /home/ubuntu/backend
+            npm run prod
       - name: Configure systemd service
         uses: appleboy/ssh-action@master
         with:
@@ -52,7 +61,7 @@ jobs:
             Description=Room Advisor Express.js Server
             
             [Service]
-            ExecStart=/usr/bin/node /home/ubuntu/backend/app.js
+            ExecStart=/usr/bin/npm prod
             Restart=always
             User=ubuntu
             Group=ubuntu

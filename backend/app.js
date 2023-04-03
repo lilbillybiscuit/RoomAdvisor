@@ -86,7 +86,6 @@ if (isProduction) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 // Asynchronous server startup: allows support for multiprocessing
 module.exports.listen = () => {
 
@@ -100,3 +99,5 @@ module.exports.listen = () => {
         console.log(`PID ${process.pid}: API listening on port ${port}`);
     });
 };
+
+module.exports.listen();
