@@ -38,39 +38,6 @@ jobs:
           source: "backend/"
           target: "/home/ubuntu/"
 
-      - name: Start/Restart with pm2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_SERVER_BETA }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
-          script: |
-            cd /home/ubuntu/backend
-            npm run prod
-      - name: Configure systemd service
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_SERVER_BETA }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
-          script: |
-            cd /etc/systemd/system
-            sudo touch roomadvisor.service
-            sudo bash -c 'cat > roomadvisor.service << EOF
-            [Unit]
-            Description=Room Advisor Express.js Server
-            
-            [Service]
-            ExecStart=/usr/bin/npm prod
-            Restart=always
-            User=ubuntu
-            Group=ubuntu
-            Environment=NODE_ENV=production
-            WorkingDirectory=/home/ubuntu/backend
-            
-            [Install]
-            WantedBy=multi-user.target
-            EOF'
       - name: Install dependencies
         uses: appleboy/ssh-action@master
         with:
@@ -81,13 +48,12 @@ jobs:
             cd /home/ubuntu/backend
             npm install --production
 
-      - name: Enable and start systemd service
+      - name: Start/Restart with pm2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_SERVER_BETA }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
-            sudo systemctl daemon-reload
-            sudo systemctl enable roomadvisor
-            sudo systemctl start roomadvisor
+            cd /home/ubuntu/backend
+            npm run prod
