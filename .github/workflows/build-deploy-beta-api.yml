@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           source: "backend/"
-          target: "/home/ubuntu/backend"
+          target: "/home/ubuntu/"
 
       - name: Configure systemd service
         uses: appleboy/ssh-action@master
