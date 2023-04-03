@@ -1,0 +1,66 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: backend/
+
+      - name: Configure SSH key
+        uses: webfactory/ssh-agent@v0.5.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_BETA }}
+
+      - name: Install Node.js 18.x if not already installed
+        run: |
+          if ! command -v node &> /dev/null
+          then
+            curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+          fi
+
+      - name: Push code to EC2
+        uses: easingthemes/ssh-deploy@v2.3.0
+        with:
+          server: ${{ secrets.EC2_SERVER_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_BETA }}
+          source: backend/
+          destination: /var/www/backend/
+
+      - name: Configure EC2 server for correct permissions
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_SERVER_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_BETA }}
+          script: |
+            # Add the current user to the www-data group
+            sudo usermod -a -G www-data $USER
+            
+            # Set ownership and permissions on the /var/www directory and its contents
+            sudo chown -R www-data:www-data /var/www
+            sudo chmod -R 775 /var/www
+            
+            # Set the sticky bit on the /var/www directory to ensure new files and directories are created with the correct ownership and permissions
+            sudo chmod -R g+s /var/www
+
+      - name: Start the app on EC2
+        uses: easingthemes/ssh-deploy@v2.3.0
+        with:
+          server: ${{ secrets.EC2_SERVER_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_BETA }}
+          script: |
+            export NODE_ENV=production
+            npm start
+          path: /var/www/backend/
