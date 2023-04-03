@@ -1,0 +1,33 @@
+name: Deploy Express.js server to EC2 (Beta)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-beta-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Upload code to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          source: "backend/"
+          target: "/home/ubuntu/backend"
+
+      - name: Install dependencies and restart service
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          script: |
+            cd /home/ubuntu/backend
+            npm install
+            sudo systemctl restart roomadvisor
