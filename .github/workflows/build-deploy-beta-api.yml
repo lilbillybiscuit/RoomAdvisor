@@ -62,6 +62,15 @@ jobs:
             [Install]
             WantedBy=multi-user.target
             EOF'
+      - name: Install dependencies
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_SERVER_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          script: |
+            cd /home/ubuntu/backend
+            npm install --production
 
       - name: Enable and start systemd service
         uses: appleboy/ssh-action@master
