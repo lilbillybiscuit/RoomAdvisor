@@ -40,6 +40,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_BETA }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Invalidate CloudFront cache
+        uses: aws-actions/amazon-cloudfront-invalidate-cache@v1
+        with:
+          distribution-id: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID_BETA }}
+          paths: '/*'
+
       - name: Upload to S3 bucket
         uses: jakejarvis/s3-sync-action@master
         with:
