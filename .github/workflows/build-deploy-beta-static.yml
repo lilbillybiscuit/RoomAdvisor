@@ -1,0 +1,49 @@
+name: Build and Deploy to S3 Bucket (Beta)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy-beta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Update constants.js file
+        run: sed -i 's|http://localhost:4000|https://beta.roomadvisor.io/api|g; s|http://localhost:3000|https://beta.roomadvisor.io|g' frontend/src/constants.js
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        working-directory: frontend/
+        run: npm install --legacy-peer-deps
+
+      - name: Build React app
+        working-directory: frontend/
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_BETA }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_BETA }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Upload to S3 bucket
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --delete --follow-symlinks
+          source_dir: frontend/build/
+          bucket_url: s3://roomadvisorbeta
+          endpoint: s3.us-east-2.amazonaws.com
+          options: --region us-east-2 --no-progress --delete-removed --follow-symlinks
+          extra_args:
+
+      - name: Upload index.html to S3 bucket
+        run: aws s3 cp frontend/build/index.html s3://roomadvisorbeta
