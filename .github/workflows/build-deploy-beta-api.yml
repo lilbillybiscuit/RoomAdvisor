@@ -13,6 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Check Node.js version
+        uses: appleboy/remote-ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          script: |
+            node_version=$(node -v)
+            if [[ $node_version == v18.* ]]; then
+              echo "Node.js 18.x is already installed."
+            else
+              echo "Node.js 18.x is not installed. Installing now..."
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+            fi
+
       - name: Upload code to EC2
         uses: appleboy/scp-action@master
         with:
@@ -22,13 +38,38 @@ jobs:
           source: "backend/"
           target: "/home/ubuntu/backend"
 
-      - name: Install dependencies and restart service
+      - name: Configure systemd service
+        uses: appleboy/remote-ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST_BETA }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          script: |
+            cd /etc/systemd/system
+            sudo touch roomadvisor.service
+            sudo bash -c 'cat > roomadvisor.service << EOF
+            [Unit]
+            Description=Room Advisor Express.js Server
+            
+            [Service]
+            ExecStart=/usr/bin/node /home/ubuntu/backend/app.js
+            Restart=always
+            User=ubuntu
+            Group=ubuntu
+            Environment=NODE_ENV=production
+            WorkingDirectory=/home/ubuntu/backend
+            
+            [Install]
+            WantedBy=multi-user.target
+            EOF'
+
+      - name: Enable and start systemd service
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST_BETA }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
-            cd /home/ubuntu/backend
-            npm install
-            sudo systemctl restart roomadvisor
+            sudo systemctl daemon-reload
+            sudo systemctl enable roomadvisor
+            sudo systemctl start roomadvisor
