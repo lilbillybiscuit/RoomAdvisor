@@ -1,4 +1,4 @@
-name: Deploy Express.js server to EC2 (Beta)
+name: Deploy Express.js server to EC2 (Prod)
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-and-deploy-beta-api:
+  build-and-deploy-prod-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
