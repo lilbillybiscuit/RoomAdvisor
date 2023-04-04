@@ -4,8 +4,7 @@ var express = require("express");
 var app = express();
 var port = process.env.PORT || 4000;
 
-const isBeta = process.env.NODE_ENV === "beta";
-const isProduction = process.env.NODE_ENV === "production" || isBeta;
+const isProduction = process.env.NODE_ENV === "production";
 
 // Declare Yale CAS authentication
 const YaleCASStrategy = require("passport-cas2").Strategy;
@@ -61,7 +60,7 @@ if (isProduction) {
         cors({
             credentials: true,
             // clientIp
-            origin: isBeta? "https://beta.roomadvisor.org": "https://roomadvisor.org",
+            origin: process.env.CLIENT_URL,
             methods: "GET, POST, PUT, DELETE",
         })
     )
@@ -86,7 +85,6 @@ if (isProduction) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 // Asynchronous server startup: allows support for multiprocessing
 module.exports.listen = () => {
 
@@ -100,3 +98,5 @@ module.exports.listen = () => {
         console.log(`PID ${process.pid}: API listening on port ${port}`);
     });
 };
+
+module.exports.listen();

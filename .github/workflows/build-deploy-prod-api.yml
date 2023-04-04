@@ -3,8 +3,7 @@ name: Deploy Express.js server to EC2 (Beta)
 on:
   push:
     branches:
-      - beta
-      - write_actions
+      - main
 
 jobs:
   build-and-deploy-beta-api:
@@ -16,9 +15,9 @@ jobs:
       - name: Check Node.js version
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_SERVER_BETA }}
+          host: ${{ secrets.EC2_SERVER_PROD }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
           script: |
             node_version=$(node -v)
             if [[ $node_version == v18.* ]]; then
@@ -32,18 +31,18 @@ jobs:
       - name: Upload code to EC2
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.EC2_SERVER_BETA }}
+          host: ${{ secrets.EC2_SERVER_PROD }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
           source: "backend/"
           target: "/home/ubuntu/"
 
       - name: Install dependencies
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_SERVER_BETA }}
+          host: ${{ secrets.EC2_SERVER_PROD }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
           script: |
             cd /home/ubuntu/backend
             npm install --production
@@ -51,9 +50,9 @@ jobs:
       - name: Start/Restart with pm2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_SERVER_BETA }}
+          host: ${{ secrets.EC2_SERVER_PROD }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
+          key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
           script: |
             cd /home/ubuntu/backend
             npm run prod
