@@ -1,24 +1,10 @@
-
+require('module-alias/register')
 // Declare the Express server and the port that it will listen on
 var express = require("express");
 var app = express();
 var port = process.env.PORT || 4000;
 
 const isProduction = process.env.NODE_ENV === "production";
-
-// Override the default require() method to look for modules in api/utils
-var Module = require('module');
-const path = require('path');
-const myModulesDir = path.join(__dirname, 'api/utils');
-const originalRequire = Module.prototype.require;
-Module.prototype.require = function(moduleName) {
-    try {
-        return originalRequire.call(this, moduleName);
-    } catch (error) {
-        const modulePath = path.join(myModulesDir, moduleName);
-        return originalRequire.call(this, modulePath);
-    }
-};
 
 // Declare Yale CAS authentication
 const YaleCASStrategy = require("passport-cas2").Strategy;

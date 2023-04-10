@@ -1,5 +1,6 @@
 // Import our config file
-const config = require("../../config");
+const config = require("@config");
+const pool = require("@utils/database/pool");
 
 // Import some other libraries/SDKs we'll need for this file as well
 const { DynamoDBClient, ListTablesCommand } = require("@aws-sdk/client-dynamodb");
