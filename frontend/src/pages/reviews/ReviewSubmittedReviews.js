@@ -30,6 +30,15 @@ export default class ReviewSubmittedReviews extends Component {
             suitesRef,
             where("buildingName", "==", collegesToCode(this.state.building.value))
         );
+
+        // fetch(`${API_BASE_URL}/suites`, {
+        //     credentials: true
+        // }).then((res) => {
+        //     if (res.status === 200) {
+
+        //     }
+        // })
+
         var suiteData = [];
         getDocs(q).then((data) => {
             data.forEach((docs) => {
