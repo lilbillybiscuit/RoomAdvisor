@@ -1,11 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-
-// import LandingPage from "./LandingPage";
-// import RegisterPage from "./RegisterPage";
-// import ViewReviews from "../components/ViewReviews";
-// import AboutPage from "./AboutPage";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { db } from "../utils/firebase";
+// import { db } from "../utils/firebase";
+import { db } from "../utils/api";
 // import {
 //   getDoc,
 //   updateDoc,
@@ -19,7 +15,7 @@ import {
   arrayUnion,
   arrayRemove,
   doc,
-} from "api/firestore";
+} from "api/store";
 import { cryptoKey } from "../constants";
 import { sha256 } from "js-sha256";
 import { LoadingOverlay } from "@mantine/core";
