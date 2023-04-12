@@ -32,9 +32,10 @@ exports.logout = function (request, result) {
     result.redirect(`${CLIENT_URL}/logout`); // what...?
 }
 
-exports.cas_passport_auth = passport.authenticate("cas", { failureRedirect: "/auth/login/failed" })
+// const yalecas = require("./strategies/yale-cas");
+exports.cas_passport_auth = passport.authenticate("yalecas", { failureRedirect: "/auth/login/failed" })
 
-exports.cas = function (request, result) {
+exports.authenticate = function (request, result) {
     // Successful authentication, redirect check if user is valid.
 
     // INSTEAD OF JUST REDIRECTING, SET USER NETID ON A COOKIE
