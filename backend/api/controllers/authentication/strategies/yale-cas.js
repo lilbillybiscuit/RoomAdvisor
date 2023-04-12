@@ -1,5 +1,5 @@
 const YaleCASStrategy = require("passport-cas2").Strategy;
-
+const passport = require("passport");
 const yalecas = new YaleCASStrategy(
     {
         version: "CAS2.0",
