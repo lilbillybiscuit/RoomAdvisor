@@ -19,5 +19,9 @@ module.exports = {
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             secure: true,
         }
+    },
+    cloudfront: {
+        header_name: "roomadvisor-cloudfront",
+        header_value: "aN9EzNP0oYKrNO4nqxkxd8GyKCD1x8Z6FLwymbrP"
     }
 }

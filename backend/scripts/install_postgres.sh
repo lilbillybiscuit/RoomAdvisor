@@ -50,6 +50,15 @@ then
     fi
 fi
 
+# Edit postgresql.conf to listen to all addresses
+sudo sed -i "s/#listen_addresses =.*/listen_addresses = \'*\'/g" /etc/postgresql/*/main/postgresql.conf
+
+# Edit pg_hba.conf to allow connections from all addresses
+sudo echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/*/main/pg_hba.conf
+
+# Restart PostgreSQL to apply changes
+sudo service postgresql restart
+
 # Check if user with the same name already exists
 if [ "$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" 2>/dev/null)" = '1' ]
 then
@@ -77,5 +86,9 @@ echo "User '$DB_USER' created successfully."
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
 echo "Privileges granted successfully."
 
+
 echo "Database initialization complete."
+echo "To connect to the database remotely, use the following parameters:"
+echo "Host: <IP address of your machine>"
+echo "Port: 5432 (default)"
 echo "Database name: $DB_NAME, user: $DB_USER, password: $DB_PASS"
