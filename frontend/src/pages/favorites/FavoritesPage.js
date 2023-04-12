@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import Nav from "../components/Nav";
-import { db } from "../utils/firebase";
-import nofavorites from "../static/no-favorites.svg";
+import Nav from "../../components/Nav";
+// import { db } from "../../utils/firebase";
+import { db } from "../../utils/api";
+import nofavorites from "../../static/no-favorites.svg";
 import {
   collection,
   getDocs,
@@ -9,8 +10,8 @@ import {
   where,
   documentId,
 } from "firebase/firestore";
-import CardsContainer from "../components/ViewReviews/Suites/CardsContainer";
-import { codeToCollege } from "../utils/colleges";
+import CardsContainer from "../../components/ViewReviews/Suites/CardsContainer";
+import { codeToCollege } from "../../utils/colleges";
 import { LoadingOverlay } from "@mantine/core";
 import { Link } from "react-router-dom";
 import "./FavoritesPage.css";

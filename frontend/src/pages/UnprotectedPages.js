@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import LandingPage from "./LandingPage";
-import AboutPage from "./AboutPage";
+import LandingPage from "./landing/LandingPage";
+import AboutPage from "./about/AboutPage";
 
 export default function UnprotectedPages() {
   return (

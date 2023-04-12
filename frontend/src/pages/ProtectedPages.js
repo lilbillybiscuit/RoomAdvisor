@@ -6,23 +6,30 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 // import AboutPage from "./AboutPage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { db } from "../utils/firebase";
+// import {
+//   getDoc,
+//   updateDoc,
+//   arrayUnion,
+//   arrayRemove,
+//   doc,
+// } from "firebase/firestore";
 import {
   getDoc,
   updateDoc,
   arrayUnion,
   arrayRemove,
   doc,
-} from "firebase/firestore";
+} from "api/firestore";
 import { cryptoKey } from "../constants";
 import { sha256 } from "js-sha256";
 import { LoadingOverlay } from "@mantine/core";
 import TIME from "../utils/try";
-import ReviewSubmittedReviews from "./ReviewSubmittedReviews";
-const LandingPage = lazy(() => import("./LandingPage"));
-const RegisterPage = lazy(() => import("./RegisterPage"));
-const ViewReviews = lazy(() => import("./ViewReviewsPage"));
-const AboutPage = lazy(() => import("./AboutPage"));
-const FavoritesPage = lazy(() => import("./FavoritesPage"));
+import ReviewSubmittedReviews from "./reviews/ReviewSubmittedReviews";
+const LandingPage = lazy(() => import("./landing/LandingPage"));
+const RegisterPage = lazy(() => import("./register/RegisterPage"));
+const ViewReviews = lazy(() => import("./reviews/ViewReviewsPage"));
+const AboutPage = lazy(() => import("./about/AboutPage"));
+const FavoritesPage = lazy(() => import("./favorites/FavoritesPage"));
 
 // TODO: WHAT HAPPENS IF FIREBASE FAILS?
 function RegisterandProtectedPages({ casUser }) {

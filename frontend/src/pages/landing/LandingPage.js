@@ -1,6 +1,6 @@
 import React from "react";
-import HeroSection from "../components/LandingPageComponents/HeroSection";
-import Nav from "../components/Nav";
+import HeroSection from "../../components/LandingPageComponents/HeroSection";
+import Nav from "../../components/Nav";
 
 function LandingPage({ isLoggedIn }) {
   return (

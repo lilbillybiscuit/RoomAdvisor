@@ -1,15 +1,17 @@
 import "./RegisterPage.css";
 import React, { useState, useEffect } from "react";
-import { getAllCollegeNames, collegesToCode } from "../utils/colleges";
-import { cryptoKey } from "../constants";
+import { getAllCollegeNames, collegesToCode } from "../../utils/colleges";
+import { cryptoKey } from "../../constants";
 import { sha256 } from "js-sha256";
-import { db } from "../utils/firebase";
-import { setDoc, doc } from "firebase/firestore";
-import { clientIp } from "../constants";
-import Nav from "../components/Nav";
-import GuidelinesList from "../components/RegisterPage/GuidelinesList";
-import agreement from "../static/agreement.svg";
-import { Button } from "../components/Button";
+// import { db } from "../../utils/firebase";
+// import { setDoc, doc } from "firebase/firestore";
+import { db } from "../../utils/api";
+import { setDoc, doc } from "api/store";
+import { clientIp } from "../../constants";
+import Nav from "../../components/Nav";
+import GuidelinesList from "../../components/RegisterPage/GuidelinesList";
+import agreement from "../../static/agreement.svg";
+import { Button } from "../../components/Button";
 import { LoadingOverlay } from "@mantine/core";
 
 function RegisterPage({ user }) {

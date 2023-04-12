@@ -1,15 +1,17 @@
 import "./ViewReviewsPage.css";
 import React, { Component } from "react";
-import Nav from "../components/Nav";
-import Results from "../components/ViewReviews/Results/Results";
-import { codeToCollege, collegesToCode } from "../utils/colleges";
-import CardsContainer from "../components/ViewReviews/Suites/CardsContainer";
-import ModalContainer from "../components/ViewReviews/GeneralModal";
-import { db } from "../utils/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import Nav from "../../components/Nav";
+import Results from "../../components/ViewReviews/Results/Results";
+import { codeToCollege, collegesToCode } from "../../utils/colleges";
+import CardsContainer from "../../components/ViewReviews/Suites/CardsContainer";
+import ModalContainer from "../../components/ViewReviews/GeneralModal";
+// import { db } from "../../utils/firebase";
+// import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../utils/api";
+import { collection, getDocs, query, where } from "api/store";
 import { LoadingOverlay } from "@mantine/core";
-import floatingReview from "../static/review_floating.png";
-import ReviewRoomModal from "../components/ViewReviews/AddReview/ReviewRoomModal";
+import floatingReview from "../../static/review_floating.png";
+import ReviewRoomModal from "../../components/ViewReviews/AddReview/ReviewRoomModal";
 import { HideOn } from "react-hide-on-scroll";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 

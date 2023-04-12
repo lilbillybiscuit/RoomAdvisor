@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Nav from "../components/Nav";
-import AboutHeroSection from "../components/AboutPage/AboutHeroSection";
+import Nav from "../../components/Nav";
+import AboutHeroSection from "../../components/AboutPage/AboutHeroSection";
 
 export default class AboutPage extends Component {
   constructor(props) {

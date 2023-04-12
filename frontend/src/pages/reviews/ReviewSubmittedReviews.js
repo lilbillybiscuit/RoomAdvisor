@@ -6,9 +6,9 @@ import {
     query,
     where,
 } from "firebase/firestore";
-import { db } from "../utils/firebase";
-import NavDropdownComponent from "../components/ViewReviews/Nav/NavDropdownComponent";
-import { codeToCollege, collegesToCode } from "../utils/colleges";
+import { db } from "../../utils/firebase";
+import NavDropdownComponent from "../../components/ViewReviews/Nav/NavDropdownComponent";
+import { codeToCollege, collegesToCode } from "../../utils/colleges";
 
 
 export default class ReviewSubmittedReviews extends Component {
