@@ -7,6 +7,9 @@ var port = process.env.PORT || 4000;
 const isProduction = process.env.NODE_ENV === "production";
 
 const passport = require("passport");
+// Initialize passport strategies
+const YaleCASStrategy = require("@controllers/authentication/strategies/yale-cas");
+passport.use('yalecas', YaleCASStrategy);
 passport.serializeUser( (user, done) => {
     done(null, user);
 });
@@ -75,9 +78,6 @@ if (isProduction) {
     );
 }
 
-// Initialize passport strategies
-const YaleCASStrategy = require("@controllers/authentication/strategies/yale-cas");
-passport.use(YaleCASStrategy);
 
 app.use(passport.initialize());
 app.use(passport.session());
