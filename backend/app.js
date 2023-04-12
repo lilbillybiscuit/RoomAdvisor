@@ -6,24 +6,7 @@ var port = process.env.PORT || 4000;
 
 const isProduction = process.env.NODE_ENV === "production";
 
-// Declare Yale CAS authentication
-const YaleCASStrategy = require("passport-cas2").Strategy;
 const passport = require("passport");
-const cas = new YaleCASStrategy(
-    {
-        version: "CAS2.0",
-        casURL: "https://secure.its.yale.edu/cas",
-    },
-    // This is the `verify` callback
-    function (req, profile, done) {
-        // profile get returned to the '/auth/login/success' route as req.user
-
-        // therefore syntax = done(null, {data returned to the route})
-        done(null, profile);
-    }
-);
-
-passport.use(cas);
 passport.serializeUser( (user, done) => {
     done(null, user);
 });
@@ -33,12 +16,13 @@ passport.deserializeUser( (user, done) => {
 
 
 // Declare external packages
-var config = require("./config"); //Do not push this to the repository
+var config = require("@config"); //Do not push this to the repository
 
 // Define the middleware that will be used by the server
 var cors = require("cors");
-var session = require("express-session");
-var cookieSession = require("cookie-session");
+const session = require('express-session');
+const RedisStore = require("connect-redis").default
+const redisClient = require("@utils/database/redis-pool");
 
 // Declare some middleware (functions that can modify the request and response objects)
 app.use(express.urlencoded( { extended: true }));
@@ -46,14 +30,20 @@ app.use(express.json());
 // use express-session for session management
 
 if (isProduction) {
-    app.set("trust proxy", 1);
     app.use(
-        cookieSession({
-            name: "__session",
-            keys: ["key1"],
-            maxAge: 24 * 60 * 60 * 100,
+        session({
+            store: new RedisStore({
+                client: redisClient
+            }),
+            secret: config.session.secret,
+            resave: false,
+            saveUninitialized: false,
             secure: true,
             httpOnly: true,
+            cookie: {
+                maxAge: config.session.cookie.maxAge,
+                secure: config.session.cookie.secure,
+            },
         })
     );
     app.use(
@@ -61,26 +51,33 @@ if (isProduction) {
             credentials: true,
             // clientIp
             origin: process.env.CLIENT_URL,
-            methods: "GET, POST, PUT, DELETE",
+            methods: "GET, POST, PUT, DELETE"
         })
     )
 } else {
-    app.use(
-        cookieSession({
-            name: "__session",
-            keys: ["key1"],
-            maxAge: 24 * 60 * 60 * 100,
-        })
-    );
+    app.use(session({
+        secret: "f9aisdf",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: config.session.cookie.maxAge,
+            secure: config.session.cookie.secure,
+        }
+    }));
+
+
     app.use(
         cors({
             credentials: true,
-            // clientIp
             origin: "http://localhost:3000",
             methods: "GET, POST, PUT, DELETE",
         })
     );
 }
+
+// Initialize passport strategies
+const YaleCASStrategy = require("@controllers/authentication/strategies/yale-cas");
+passport.use(YaleCASStrategy);
 
 app.use(passport.initialize());
 app.use(passport.session());
