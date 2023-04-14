@@ -39,8 +39,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           source: "backend/scripts/install_postgres.sh"
-          target: "/home/ubuntu/scripts/"
-          mkdir: true
+          target: "/home/ubuntu/"
 
 
       - name: Install Postgres on Postgres EC2 (Beta)
@@ -50,7 +49,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
-            cd /home/ubuntu/scripts
+            cd /home/ubuntu/backend/scripts
             ./install_postgres.sh ${{ secrets.POSTGRES_PASS_BETA }} --no-replace-database --no-replace-password
 
       - name: Copy Redis Install script to Redis EC2 (Beta)
@@ -60,8 +59,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           source: "backend/scripts/install_redis.sh"
-          target: "/home/ubuntu/scripts/"
-          mkdir: true
+          target: "/home/ubuntu/"
 
       - name: Install Redis on Redis EC2 (Beta)
         uses: appleboy/ssh-action@master
@@ -70,7 +68,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY_BETA }}
           script: |
-            cd /home/ubuntu/scripts
+            cd /home/ubuntu/backend/scripts
             ./install_redis.sh ${{ secrets.REDIS_PRIVATE_IP_BETA }} ${{ secrets.REDIS_PASS_BETA }} --no-replace-password
 
       - name: Upload code to EC2
