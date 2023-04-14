@@ -37,7 +37,8 @@ function HeroSection({ isLoggedIn }) {
           <LoginComponent isLoggedIn={isLoggedIn} />
         </Button>
         <Button buttonStyle="btn--secondary" buttonSize="btn--medium">
-          <Link to="/about" style={{ color: "white" }}>
+          <Link to="/about">  
+          {/* style={{ color: "white" }} */}
             About
           </Link>
         </Button>
@@ -48,7 +49,7 @@ function HeroSection({ isLoggedIn }) {
           <LoginComponent isLoggedIn={isLoggedIn} />
         </Button>
         <Button buttonStyle="btn--secondary" buttonSize="btn--medium">
-          <Link to="/about" style={{ color: "white" }}>
+          <Link to="/about">
             About
           </Link>
         </Button>
