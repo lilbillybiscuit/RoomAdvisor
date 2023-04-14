@@ -51,6 +51,6 @@ module.exports = function(app) {
     //Working
     app.route("/api/suites/").get(suitescontroller.getSuites);
 
-    //
+    //Working
     app.route("/api/suites/").post(suitescontroller.addSuite);
 }

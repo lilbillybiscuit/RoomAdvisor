@@ -90,7 +90,7 @@ var pool = require("@utils/database/pool");
    * result json = new suite that was created
    */
   exports.addSuite = function (request, result) {
-  
+    
       //Define variables to grab from JSON
       var college_req
       var entryway_req
@@ -158,7 +158,7 @@ var pool = require("@utils/database/pool");
           numsingles_req = request.body.numsingles
           rooms_req = JSON.stringify(request.body.rooms).replace('[', '{').replace(']', '}')
       } catch (error) {
-          result.status(401).json("Bad Request")
+          result.status(400).json("Bad Request")
           throw error
       }
   
@@ -173,7 +173,7 @@ var pool = require("@utils/database/pool");
           if (error) {
               throw error
           }
-          result.status(200).json(results.rows)
+          result.status(201).json(results.rows)
       })
   }
   
