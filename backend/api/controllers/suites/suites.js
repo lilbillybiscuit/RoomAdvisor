@@ -78,11 +78,7 @@ var pool = require("@utils/database/pool");
     ],
     "size": "float",
     "owners": [
-      {
-        "user_id": "string",
-        "name": "string",
-        "url": "string"
-      }
+      "string"
     ],
     "numpeople": "number",
     "numdoubles": "number",
@@ -103,7 +99,10 @@ var pool = require("@utils/database/pool");
       var accessible_req
       var pictures_req
       var size_req
-      var owners_req = ""
+      var owners_req = "{"
+      var user_id_req
+      var name_req
+      var url_req
       var numpeople_req
       var numdoubles_req
       var numsingles_req
@@ -135,7 +134,25 @@ var pool = require("@utils/database/pool");
           accessible_req = request.body.accessible
           pictures_req = JSON.stringify(request.body.pictures).replace('[', '{').replace(']', '}')
           size_req = request.body.size
-          owners_req = JSON.stringify(request.body.owners).replace('[', '{').replace(']', '}')
+
+          for(var i = 0; i < request.body.owners.length; i++) {
+            user_id_req = request.body.owners[i].user_id
+            name_req = request.body.owners[i].name
+            url_req = request.body.owners[i].url
+            pool.query(`INSERT INTO roomadvisor_owners (user_id, name, url)
+                VALUES ('${user_id_req}', '${name_req}', '${url_req}')`, (error, results) => {
+                    
+                    if(error) {
+                        throw error;
+                    }
+
+                })
+
+            owners_req += user_id_req + ", "
+          }
+
+          owners_req = owners_req.substring(0, owners_req.length - 2) + "}"
+
           numpeople_req = request.body.numpeople
           numdoubles_req = request.body.numdoubles
           numsingles_req = request.body.numsingles
@@ -151,16 +168,12 @@ var pool = require("@utils/database/pool");
         numpeople, numdoubles, numsingles, rooms)
         VALUES ('${new_id}', '${college_req}', '${entryway_req}', '${suite_number_req}',
         '${accessible_req}', '${pictures_req}', '${size_req}', '${owners_req}','${numpeople_req}',
-        '${numdoubles_req}', '${numsingles_req}', '${rooms_req}')`, (error, results) => {
+        '${numdoubles_req}', '${numsingles_req}', '${rooms_req}') RETURNING *`, (error, results) => {
       
           if (error) {
               throw error
           }
-          
-          //Get and return the new suite object
-          pool.query(`SELECT * from roomadvisor_suites WHERE id like '${new_id}'`, (error_two, results_two) => {
-              result.status(200).json(results_two.rows)
-          })
+          result.status(200).json(results.rows)
       })
   }
   
@@ -205,66 +218,64 @@ var pool = require("@utils/database/pool");
       var numsingles_req = request.body.numsingles || ""
       var rooms_req = request.body.rooms || ""
 
-    var query_str = `UPDATE roomadvisor_suites SET `
+    var query_str = "UPDATE roomadvisor_suites SET "
 
     if(college_req != "") {
-        query_str += `college = '${college_req}', `
+        query_str += "college = \'${college_req}\', "
     }
 
     if(entryway_req != "") {
-        query_str += `entryway = '${entryway_req}', `
+        query_str += "entryway = '${entryway_req}', "
     }
 
     if(suite_number_req != "") {
-        query_str += `suite_number = '${suite_number_req}', `
+        query_str += "suite_number = \'${suite_number_req}\', "
     }
 
     if(accessible_req != "") {
-        query_str += `accessible = '${accessible_req}', `
+        query_str += "accessible = \'${accessible_req}\', "
     }
 
     if(pictures_req != "") {
-        query_str += `pictures = '${pictures_req}', `
+        query_str += "pictures = \'${pictures_req}\', "
     }
 
     if(size_req != "") {
-        query_str += `size = '${size_req}', `
+        query_str += "size = \'${size_req}\', "
     }
 
     if(owners_req != "") {
-        query_str += `owners = '${owners_req}', `
+        query_str += "owners = \'${owners_req}\', "
     }
 
     if(numpeople_req != "") {
-        query_str += `numpeople = '${numpeople_req}', `
+        query_str += "numpeople = \'${numpeople_req}\', "
     }
 
     if(numdoubles_req != "") {
-        query_str += `numdoubles = '${numdoubles_req}', `
+        query_str += "numdoubles = \'${numdoubles_req}\', "
     }
 
     if(numsingles_req != "") {
-        query_str += `numsingles = '${numsingles_req}', `
+        query_str += "numsingles = \'${numsingles_req}\', "
     }
 
     if(rooms_req != "") {
-        query_str += `rooms = '${rooms_req}', `
+        query_str += "rooms = \'${rooms_req}\', "
     }
 
-    query_str = query_str.substring(0, query_str.length - 2) ` WHERE id like '${mod_id}'`
-
+    query_str = query_str.substring(0, query_str.length - 2) + " WHERE id like \'${mod_id}\' RETURNING *"
+    console.log(query_str)
+    console.log(`${query_str}`)
       //Insert variables into sql array
-      pool.query(query_str, (error, results) => {
+      pool.query(`${query_str}`, (error, results) => {
   
       //ACTUALLY USE "RETURNING *" FOR THIS FUNCTION AND ADDSUITE TO AVOID SECOND POOLQUERY
           if (error) {
               throw error
           }
           
-          //Get and return the new suite object
-          pool.query(`SELECT * from roomadvisor_suites WHERE id like '${mod_id}'`, (error_two, results_two) => {
-              result.status(200).json(results_two.rows)
-          })
+          result.status(200).json(results.rows)
       })
   }
 
