@@ -50,7 +50,8 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
           script: |
             cd /home/ubuntu/backend/scripts
-            ./install_postgres.sh ${{ secrets.POSTGRES_PASS_PROD }} --no-replace-database --no-replace-password
+            chmod +x install_postgres.sh
+            sudo ./install_postgres.sh ${{ secrets.POSTGRES_PASS_PROD }} --no-replace-database --no-replace-password
 
       - name: Copy Redis Install script to Redis EC2 (Prod)
         uses: appleboy/scp-action@master
@@ -69,7 +70,8 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY_PROD }}
           script: |
             cd /home/ubuntu/backend/scripts
-            ./install_redis.sh ${{ secrets.REDIS_PRIVATE_IP_PROD }} ${{ secrets.REDIS_PASS_PROD }} --no-replace-password
+            chmod +x install_redis.sh
+            sudo ./install_redis.sh ${{ secrets.REDIS_PRIVATE_IP_PROD }} ${{ secrets.REDIS_PASS_PROD }} --no-replace-password
 
       - name: Upload code to EC2
         uses: appleboy/scp-action@master
