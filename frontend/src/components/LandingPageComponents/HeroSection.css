@@ -21,6 +21,17 @@ img {
     padding-top: 5%;
 }
 
+.hero-container > .intro {
+    list-style-type:none;
+    text-align: left;
+    font-family: Lato, Helvetica, sans-serif;
+    font-weight: 600;
+    width: 50%;
+    color: #000;
+    font-size: 1.5vw;
+    padding-bottom: 8px;
+}
+
 .hero-container > h1 {
     text-align: left;
     font-family: Lato, Helvetica, sans-serif;
@@ -94,16 +105,15 @@ img {
         display: none;
     }
 
-    /* use mobile hero container */
-    .mobile-para {
+    .hero-container .intro {
         font-family: Lato, Helvetica, sans-serif;
         font-weight: 600;
         color: #000;
         font-size: 15px;
         padding-bottom: 8px;
         width: 100%;
-        text-align: center;
-        padding-left: 20px;
+        text-align: left;
+        padding-left: 40px;
         padding-right: 20px;
     }
 

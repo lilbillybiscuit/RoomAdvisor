@@ -34,6 +34,33 @@
     cursor: pointer;
 }
 
+.btn--secondary {
+    background-color: #000000;  /* Black */
+    border-radius: 8px;
+    color: white;
+    border: 2px solid #000000;
+    padding: auto;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.btn--secondary.disabled {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
+}
+
+.btn--secondary.disabled:hover {
+    transition: none;
+    background-color: #cccccc;
+    color: #666666;
+}
+
 .btn--outline {
     background-color: transparent;
     border-radius: 8px;
