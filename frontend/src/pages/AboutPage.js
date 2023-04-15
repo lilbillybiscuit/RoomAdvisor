@@ -22,7 +22,7 @@ export default class AboutPage extends Component {
 }
 
 function testSuite() {
-  fetch("http://localhost:4000/api/suites/", {
+  fetch("http://localhost:4000/api/suites", {
     credentials: "include"
   }).then(res => {
     if(res.status === 200) {

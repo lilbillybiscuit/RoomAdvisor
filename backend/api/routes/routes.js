@@ -36,21 +36,10 @@ module.exports = function(app) {
     app.route("/addFavorite").post(reviewscontroller.addFavorite);
 
     var suitescontroller = require("@controllers/suites/suites");
-    //Working?
     app.route("/api/rooms/:id").get(suitescontroller.getRoomInfo);
-
-    //Working
     app.route("/api/suites/:id").get(suitescontroller.getSuiteInfo);
-
-    //Not functioning
     app.route("/api/suites/:id").put(suitescontroller.modSuite);
-
-    //Working
     app.route("/api/suites/:id").delete(suitescontroller.delSuite);
-
-    //Working
-    app.route("/api/suites/").get(suitescontroller.getSuites);
-
-    //Working
-    app.route("/api/suites/").post(suitescontroller.addSuite);
+    app.route("/api/suites").get(suitescontroller.getSuites);
+    app.route("/api/suites").post(suitescontroller.addSuite);
 }
