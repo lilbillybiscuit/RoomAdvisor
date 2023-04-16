@@ -10,6 +10,8 @@ import { codeToCollege } from "../../../utils/colleges";
 import received from "../../../static/review-received.svg";
 import compressing from "../../../static/compressing-images.svg";
 
+// TO DO
+
 const theme = createTheme({
   typography: {
     body1: {

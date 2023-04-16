@@ -10,6 +10,7 @@ import { db } from "../utils/firebase";
 import NavDropdownComponent from "../components/ViewReviews/Nav/NavDropdownComponent";
 import { codeToCollege, collegesToCode } from "../utils/colleges";
 
+// TO DO
 
 export default class ReviewSubmittedReviews extends Component {
     constructor(props) {
