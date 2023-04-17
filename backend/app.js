@@ -24,8 +24,9 @@ var config = require("@config"); //Do not push this to the repository
 // Define the middleware that will be used by the server
 var cors = require("cors");
 const session = require('express-session');
-const RedisStore = require("connect-redis").default
-const redisClient = require("@utils/database/redis-pool");
+const pgSession = require('connect-pg-simple')(session);
+// const RedisStore = require("connect-redis").default
+// const redisClient = require("@utils/database/redis-pool");
 
 // Declare some middleware (functions that can modify the request and response objects)
 app.use(express.urlencoded( { extended: true }));
@@ -35,8 +36,10 @@ app.use(express.json());
 if (isProduction) {
     app.use(
         session({
-            store: new RedisStore({
-                client: redisClient
+            store: new pgSession({
+                pool: require("@utils/database/pool"),
+                tableName: "session",
+                createTableIfMissing: true,
             }),
             secret: config.session.secret,
             resave: false,
