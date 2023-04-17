@@ -1,4 +1,4 @@
-
+const pool = require("@utils/database/pool");
 exports.getReviews = function (request, result) {
     const str = [
         {
