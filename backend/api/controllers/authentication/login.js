@@ -33,7 +33,7 @@ exports.logout = function (request, result) {
 }
 
 // const yalecas = require("./strategies/yale-cas");
-exports.cas_passport_auth = passport.authenticate("yalecas", { failureRedirect: "/auth/login/failed" })
+exports.cas_passport_auth = passport.authenticate("yalecas", { failureRedirect: "/api/auth/login/failed" })
 
 exports.authenticate = function (request, result) {
     // Successful authentication, redirect check if user is valid.
@@ -41,6 +41,6 @@ exports.authenticate = function (request, result) {
     // INSTEAD OF JUST REDIRECTING, SET USER NETID ON A COOKIE
     // RETRIEVE THE COOKIE FROM /auth/login/success
     console.log("redirect to check user validity");
-    result.redirect(`${CLIENT_URL}/viewreviews`);
+    result.redirect(`${CLIENT_URL}/home`);
     
 }

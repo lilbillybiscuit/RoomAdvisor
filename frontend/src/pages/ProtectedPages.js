@@ -24,6 +24,8 @@ const ViewReviews = lazy(() => import("./ViewReviewsPage"));
 const AboutPage = lazy(() => import("./AboutPage"));
 const FavoritesPage = lazy(() => import("./FavoritesPage"));
 
+// TO DO
+
 // TODO: WHAT HAPPENS IF FIREBASE FAILS?
 function RegisterandProtectedPages({ casUser }) {
   const [isLoading, setLoading] = useState(true);

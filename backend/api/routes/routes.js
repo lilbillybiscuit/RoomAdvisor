@@ -31,10 +31,39 @@ module.exports = function(app) {
     app.route("/api/auth/login")
         .post(authcontroller.cas_passport_auth, authcontroller.authenticate);
 
-    var reviewscontroller = require("../controllers/reviews");
-    app.route("/viewreviews").get(reviewscontroller.getReviews);
-    app.route("/addFavorite").post(reviewscontroller.addFavorite);
+    var reviewscontroller = require("../controllers/reviews/reviews");
+    app.route("/viewreviews").get(utilfunctions.deprecated, reviewscontroller.getReviews);
+    app.route("/addFavorite").post(utilfunctions.deprecated, reviewscontroller.addFavorite);
+
+    app.route("/api/reviews").get(utilfunctions.returnSuccessNotImplemented);
+    app.route("/api/reviews").post(utilfunctions.returnSuccessNotImplemented);
+    app.route("/api/reviews/:id").get(utilfunctions.returnSuccessNotImplemented);
+    app.route("/api/reviews/:id").put(utilfunctions.returnSuccessNotImplemented);
+
+
 
     var suitescontroller = require("@controllers/suites/suites");
-    // app.use("/api/suites", );
+    app.route("/api/rooms/:id").get(suitescontroller.getRoomInfo);
+    app.route("/api/suites/:id").get(suitescontroller.getSuiteInfo);
+    app.route("/api/suites/:id").put(suitescontroller.modSuite);
+    app.route("/api/suites/:id").delete(suitescontroller.delSuite);
+    app.route("/api/suites").get(suitescontroller.getSuites);
+    app.route("/api/suites").post(suitescontroller.addSuite);
+
+    var roomscontroller = require("@controllers/rooms/rooms");
+    // app.route("/api/rooms/:id").get(utilfunctions.returnSuccessNotImplemented); // TODO: Implement, move from suites
+    app.route("/api/rooms/:id").put(utilfunctions.returnSuccessNotImplemented);
+    app.route("/api/rooms/:id").delete(utilfunctions.returnSuccessNotImplemented);
+    app.route("/api/rooms").get(utilfunctions.returnSuccessNotImplemented);
+    app.route("/api/rooms").post(utilfunctions.returnSuccessNotImplemented);
+
+
+
+
+
+
+    var userscontroller = require("@controllers/users/users");
+    app.route("/api/users/:id").get(utilfunctions.returnSuccessNotImplemented);
+
+
 }

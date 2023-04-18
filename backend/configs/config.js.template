@@ -8,7 +8,7 @@ module.exports = {
         password: "password",
         database: "roomadvisor"
     },
-    redis: {
+    redis: { // redis has been disabled for now
         host: "localhost",
         port: 6379,
         password: "password"

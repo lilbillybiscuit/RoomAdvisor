@@ -27,8 +27,6 @@ else
   echo ""
 fi
 
-sudo setfacl -R -m u:ubuntu:rwx,d:u:ubuntu:rwx,u:postgres:rwx,d:u:postgres:rwx /home/ubuntu
-
 # Generate a random password if no argument is provided
 if [ -z "$DB_PASS" ]
 then
@@ -51,10 +49,11 @@ then
     sudo echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/*/main/pg_hba.conf
 fi
 
+sudo setfacl -R -m u:ubuntu:rwx,d:u:ubuntu:rwx,u:postgres:rwx,d:u:postgres:rwx /home/ubuntu
 
 # Check if database with the same name already exists. If the --no-replace-database flag is provided, the script will skip the database creation.
 
-if [ "$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'" 2>/dev/null)" = '1' ]
+if sudo -u postgres psql -lqt | cut -d \| -f 1 | grep -wq "$DB_NAME"
 then
     # check if --no-replace-database flag is provided, if so, skip database creation but continue with user creation
 
@@ -75,15 +74,18 @@ then
             echo "Database initialization terminated by user."
         fi
     fi
+else
+    # Create the database
+    sudo -u postgres createdb $DB_NAME
+    echo "Database '$DB_NAME' created successfully."
 fi
 
 # Restart PostgreSQL to apply changes
 sudo service postgresql restart
 
 # Check if user with the same name already exists
-if [ "$(sudo -u postgres psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" 2>/dev/null)" = '1' ]
+if sudo -u postgres psql -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" | grep -q 1
 then
-
     # check if --no-replace-password flag is provided as the third argument, if so, skip user creation, and continue the script
 
     if [ "$3" = "--no-replace-password" ]
@@ -94,11 +96,11 @@ then
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]
         then
-            # Drop the existing user
+            # Drop the existing user in the database
             sudo -u postgres dropuser $DB_USER
             # Create the database user and set its password
             sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASS';"
-            echo "User '$DB_USER' created successfully."
+            echo "User '$DB_USER' created successfully with password '$DB_PASS'."
             # Grant all privileges to the user on the database
             sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
             echo "Privileges granted successfully."
@@ -106,6 +108,14 @@ then
             echo "Database initialization terminated by user."
         fi
     fi
+else
+    sudo -u postgres dropuser $DB_USER
+    # Create the database user and set its password
+    sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASS';"
+    echo "User '$DB_USER' created successfully with password '$DB_PASS'."
+    # Grant all privileges to the user on the database
+    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
+    echo "Privileges granted successfully."
 fi
 
 echo "Database initialization complete."
