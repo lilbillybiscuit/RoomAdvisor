@@ -13,6 +13,8 @@ import ReviewRoomModal from "../components/ViewReviews/AddReview/ReviewRoomModal
 import { HideOn } from "react-hide-on-scroll";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
+// TO DO
+
 class ViewReviews extends Component {
   // initial setup
   constructor(props) {

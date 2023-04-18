@@ -2,10 +2,10 @@ module.exports = {
     name: "hello-world",
     version: "1.0.0",
     postgres: {
-        host: "localhost",
+        host: "10.211.55.26",
         port: 5432,
-        user: "postgres",
-        password: "f2863a1386c1819243d502b7",
+        user: "roomadvisor",
+        password: "password",
         database: "roomadvisor"
     },
     redis: {
