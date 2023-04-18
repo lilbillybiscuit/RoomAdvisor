@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function LoginComponent({ isLoggedIn }) {
   const casLogin = () => {
     console.log("casLogin");
-    window.open(`${serverIp}/auth/cas`, "_self");
+    window.open(`${serverIp}/auth/login`, "_self");
   };
 
   const navigate = useNavigate();

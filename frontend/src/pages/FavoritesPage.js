@@ -14,7 +14,7 @@ import { codeToCollege } from "../utils/colleges";
 import { LoadingOverlay } from "@mantine/core";
 import { Link } from "react-router-dom";
 import "./FavoritesPage.css";
-import constants from "../constants"
+import { serverIp } from "../constants"
 
 // TODO
 
@@ -48,7 +48,7 @@ export default class FavoritesPage extends Component {
     const suiteRef = collection(db, "Suites");
     const q = query(suiteRef, where(documentId(), "in", favoriteDocRefs));
 
-    fetch(`${constants.serverIp}/suites/fafsdf`, { // gets a specific suite by id fafsdf
+    fetch(`${serverIp}/suites/fafsdf`, { // gets a specific suite by id fafsdf
       credentials: "include"
     }).then((res => {
           if(res.status === 200) {

@@ -29,7 +29,7 @@ module.exports = function(app) {
     app.route("/api/auth/login/failed").get(authcontroller.loginFailed);
     app.route("/api/auth/logout").get(authcontroller.logout);
     app.route("/api/auth/login")
-        .post(authcontroller.cas_passport_auth, authcontroller.authenticate);
+        .get(authcontroller.cas_passport_auth, authcontroller.authenticate);
 
     var reviewscontroller = require("../controllers/reviews/reviews");
     app.route("/viewreviews").get(utilfunctions.deprecated, reviewscontroller.getReviews);
