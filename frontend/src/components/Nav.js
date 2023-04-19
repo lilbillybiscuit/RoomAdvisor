@@ -67,7 +67,7 @@ export default class Nav extends Component {
 
   render() {
     return (
-      <div className="container" ref={this.container}>
+      <div className="navbar-wrapper" ref={this.container}>
         <div className="navbar-header">
           <header>
             <nav>

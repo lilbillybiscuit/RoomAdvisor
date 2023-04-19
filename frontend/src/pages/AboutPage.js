@@ -10,7 +10,6 @@ export default class AboutPage extends Component {
     };
   }
 
-
   render() {
     return (
       <div>
@@ -28,7 +27,7 @@ export default class AboutPage extends Component {
 //     if(res.status === 200) {
 //       console.log(res.json())
 //       return res.json()
-//     } 
+//     }
 //   })
 // }
 
