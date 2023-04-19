@@ -44,3 +44,16 @@ exports.authenticate = function (request, result) {
     result.redirect(`${CLIENT_URL}/home`);
     
 }
+
+exports.checkAuthenticated = function (request, result) {
+    if (request.isAuthenticated()) {
+        return result.status(200).json({
+            success: true,
+            message: "User is authenticated",
+        });
+    }
+    return result.status(401).json({
+        success: false,
+        message: "User is not authenticated",
+    });
+}
