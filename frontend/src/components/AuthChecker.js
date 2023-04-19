@@ -5,7 +5,7 @@ const AuthChecker = () => {
   fetch(`${serverIp}/auth/check`, {
       credentials: "include"
     }).then((res)=> {
-      if (res.status!==200) {
+      if (res.status !== 200) {
         window.open(`${serverIp}/auth/login`, "_self");
       }
     })

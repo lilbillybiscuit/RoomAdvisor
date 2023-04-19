@@ -15,6 +15,7 @@ import { LoadingOverlay } from "@mantine/core";
 import { Link } from "react-router-dom";
 import "./FavoritesPage.css";
 import { serverIp } from "../constants"
+import AuthChecker from "../components/AuthChecker"
 
 // TODO
 
@@ -31,6 +32,7 @@ export default class FavoritesPage extends Component {
   }
 
   componentDidMount() {
+    <AuthChecker />
     document.addEventListener("click", this.handleModalOpen);
 
     var favoriteDocRefs = [];
@@ -77,6 +79,7 @@ export default class FavoritesPage extends Component {
   }
 
   componentWillUnmount() {
+    <AuthChecker />
     document.removeEventListener("click", this.handleModalOpen);
     this.setState({ ...this.state, loading: true });
   }
