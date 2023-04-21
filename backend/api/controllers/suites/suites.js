@@ -1,5 +1,7 @@
 var pool = require("@utils/database/pool");
 
+
+
 /**
 * getSuites gets all suites matching the conditionals
 * request query params = optional conditionals
@@ -19,32 +21,11 @@ exports.getSuites = function (request, result) {
         if (error) {
             throw error
         }
-        result.status(200).json(results.rows)
+        return result.status(200).json(results.rows)
     })
 }
 
-/**
- * getRoomInfo gets the info on a room given the ID
- * request params = room ID
- * result json = room info
- */
-exports.getRoomInfo = function (request, result) {
 
-    const room_id = request.params.id
-
-    pool.query(`SELECT * FROM roomadvisor_rooms WHERE id like ${room_id}`, (error, results) => {
-
-        if (error) {
-            throw error
-        }
-        
-        if (results.rows.length == 0) {
-            result.status(404).json("Room not found.")
-        } else {
-            result.status(200).json(results.rows)
-        }
-    })
-}
 
 /**
  * getSuiteInfo gets the info on a suite given the ID
@@ -62,12 +43,14 @@ exports.getSuiteInfo = function (request, result) {
         }
 
         if (results.rows.length == 0) {
-            result.status(404).json("Suite not found.")
+            return result.status(404).json("Suite not found.")
         } else {
-            result.status(200).json(results.rows)
+            return result.status(200).json(results.rows)
         }
     })
 }
+
+
 
 /**
  * addSuite takes all parameters needed for a new suite and makes that suite
@@ -103,7 +86,7 @@ exports.addSuite = function (request, result) {
     var accessible_req
     var pictures_req
     var size_req
-    var owners_req = "{"
+    var owners_req
     var user_id_req
     var name_req
     var url_req
@@ -117,86 +100,23 @@ exports.addSuite = function (request, result) {
         college_req = request.body.college
         entryway_req = request.body.entryway
         suite_number_req = request.body.suite_number
-
-        //Temp/possible generator for suite ID
-        const lettersnumbers = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        var length = 0
-        var id = ""
-        while (length < 6) {
-            id += lettersnumbers.charAt(Math.floor(Math.random() * lettersnumbers.length));
-            length += 1;
-        }
-        space_ind = college_req.indexOf(' ')
-        if(space_ind > -1) {
-            new_id = college_req.substring(0, space_ind) + "-" +
-            college_req.substring(space_ind, college_req.length)
-            + "-" + suite_number_req + "-" + id
-        } else {
-            new_id = college_req + "-" + suite_number_req + "-" + id 
-        }
-
+        new_id = createID(college_req, suite_number_req)
         accessible_req = request.body.accessible
-
-        //Must stringify and change brackets to braces for json arrays to go into sql table
         pictures_req = JSON.stringify(request.body.pictures).replace('[', '{').replace(']', '}')
         size_req = request.body.size
 
-        for(var i = 0; i < request.body.owners.length; i++) {
-            //Define owner variables
-            user_id_req = request.body.owners[i].user_id
-            name_req = request.body.owners[i].name
-            url_req = request.body.owners[i].url
-            
-            //If any are null, bad request
-            if(user_id_req == null || name_req == null || url_req == null) {
-                result.status(400).json("Bad Request")
-                return;
-            }
+        owners_req = updateOwnersAndCreateArr(request.body.owners)
 
-            //See if owner already exists
-            pool.query(`SELECT * from roomadvisor_owners WHERE user_id like '${user_id_req}'`, (err, res) => {
-
-                //If not, insert it into owner table
-                if(res.rows.length === 0) {
-                    pool.query(`BEGIN; INSERT INTO roomadvisor_owners (user_id, name, url)
-                VALUES ('${user_id_req}', '${name_req}', '${url_req}'); COMMIT;`, (error, results) => {
-                    
-                    if(error) {
-                        results.status(400).json("Bad Request")
-                        return;
-                    }
-
-                })
-
-                //Otherwise, update its data if necessary
-                } else {
-                    pool.query(`BEGIN; UPDATE roomadvisor_owners SET name = '${name_req}', url = '${url_req}' WHERE
-                    user_id like '${user_id_req}'; COMMIT;`
-                    , (error, results) => {
-                    
-                    if(error) {
-                        results.status(400).json("Bad Request")
-                        return;
-                    }
-
-                })
-
-                }
-            })
-
-            owners_req += user_id_req + ", "
+        if(owners_req === "bad") {
+            return result.status(400).json("Bad Request")
         }
-
-        owners_req = owners_req.substring(0, owners_req.length - 2) + "}"
-
         numpeople_req = request.body.numpeople
         numdoubles_req = request.body.numdoubles
         numsingles_req = request.body.numsingles
         rooms_req = JSON.stringify(request.body.rooms).replace('[', '{').replace(']', '}')
 
     } catch (error) {
-        result.status(400).json("Bad Request")
-        return;
+        return result.status(400).json("Bad Request")
     }
 
     //Insert variables into sql array
@@ -208,12 +128,90 @@ exports.addSuite = function (request, result) {
     '${numdoubles_req}', '${numsingles_req}', '${rooms_req}') RETURNING *`, (error, results) => {
     
         if (error) {
-            result.status(400).json("Bad Request")
+            return result.status(400).json("Bad Request")
         }
 
-        result.status(201).json(results.rows)
+        return result.status(201).json(results.rows)
     })
 }
+
+
+
+//Temp/possible generator for suite ID
+function createID(college, suite_number) {
+
+    const lettersnumbers = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    var length = 0
+    var id = ""
+
+    while (length < 6) {
+        id += lettersnumbers.charAt(Math.floor(Math.random() * lettersnumbers.length));
+        length += 1;
+    }
+
+    space_ind = college.indexOf(' ')
+
+    if(space_ind > -1) {
+        return college.substring(0, space_ind) + "-" +
+        college.substring(space_ind + 1, college.length)
+        + "-" + suite_number + "-" + id
+    } else {
+        return college + "-" + suite_number + "-" + id 
+    }
+}
+
+function updateOwnersAndCreateArr(owners) {
+
+    var res = "{"
+
+    for(var i = 0; i < owners.length; i++) {
+        //Define owner variables
+        user_id_req = owners[i].user_id
+        name_req = owners[i].name
+        url_req = owners[i].url
+        
+        //If any are null, bad request
+        if(user_id_req == null || name_req == null || url_req == null) {
+            return "bad"
+        }
+
+        //See if owner already exists
+        pool.query(`SELECT * from roomadvisor_owners WHERE user_id like '${user_id_req}'`, (err, res) => {
+
+            //If not, insert it into owner table
+            if(res.rows.length === 0) {
+                pool.query(`BEGIN; INSERT INTO roomadvisor_owners (user_id, name, url)
+            VALUES ('${user_id_req}', '${name_req}', '${url_req}'); COMMIT;`, (error, results) => {
+                
+                if(error) {
+                    return "bad"
+                }
+
+            })
+
+            //Otherwise, update its data if necessary
+            } else {
+                pool.query(`BEGIN; UPDATE roomadvisor_owners SET name = '${name_req}', url = '${url_req}' WHERE
+                user_id like '${user_id_req}'; COMMIT;`
+                , (error, results) => {
+                
+                if(error) {
+                    return "bad"
+                }
+
+            })
+
+            }
+        })
+
+        res += user_id_req + ", "
+    }
+
+    res = res.substring(0, res.length - 2) + "}"
+    return res
+}
+
+
 
 /**
  * delSuite deletes a suite based on a given suite ID
@@ -227,14 +225,16 @@ exports.delSuite = function (request, result) {
     //Check if suite exists, and delete it if so
     pool.query(`SELECT * from roomadvisor_suites WHERE id like '${del_id}'`, (err, res) => {
         if(res.rows.length == 0) {
-            result.status(404).json("Suite not found.")
+            return result.status(404).json("Suite not found.")
         } else {
             pool.query(`DELETE FROM roomadvisor_suites WHERE id like '${del_id}'`, (error, results) => {      
-                result.status(204).json("")
+                return result.status(204).json("")
             })
         }
     })
 }
+
+
 
 /**
  * modSuite modifies a suite based on a given suite ID
@@ -287,50 +287,8 @@ exports.modSuite = function (request, result) {
         query_str += "size = \'" + size_req + "\', "
     }
 
-    //Similar function as in addSuite, adds and updates owners table
     if(owners_req != "") {
-        owners_req = "{"
-        for(var i = 0; i < request.body.owners.length; i++) {
-            user_id_req = request.body.owners[i].user_id
-            name_req = request.body.owners[i].name
-            url_req = request.body.owners[i].url
-
-            if(user_id_req == null || name_req == null || url_req == null) {
-                result.status(400).json("Bad Request")
-                return;
-            }
-
-            pool.query(`SELECT * from roomadvisor_owners WHERE user_id like '${user_id_req}'`, (err, res) => {
-                if(res.rows.length === 0) {
-                    pool.query(`INSERT INTO roomadvisor_owners (user_id, name, url)
-                VALUES ('${user_id_req}', '${name_req}', '${url_req}')`, (error, results) => {
-                    
-                    if(error) {
-                        results.status(400).json("Bad Request")
-                        return;
-                    }
-
-                })
-
-                } else {
-                    pool.query(`UPDATE roomadvisor_owners SET name = '${name_req}', url = '${url_req}' WHERE
-                    user_id like '${user_id_req}'`
-                    , (error, results) => {
-                    
-                    if(error) {
-                        results.status(400).json("Bad Request")
-                        return;
-                    }
-
-                })
-
-                }
-            })
-
-            owners_req += user_id_req + ", "
-            }
-
-            owners_req = owners_req.substring(0, owners_req.length - 2) + "}"
+        owners_req = updateOwnersAndCreateArr(owners_req)
         query_str += "owners = \'" + owners_req + "\', "
     }
 
@@ -351,13 +309,13 @@ exports.modSuite = function (request, result) {
     }
 
     query_str = query_str.substring(0, query_str.length - 2) + " WHERE id like \'" + mod_id + "\' RETURNING *"
-
+    
     pool.query(`${query_str}`, (error, results) => {
 
         if (results.rows.length === 0) {
-            result.status(404).json("Suite not found.")
+            return result.status(404).json("Suite not found.")
         }
         
-        result.status(200).json(results.rows)
+        return result.status(200).json(results.rows)
     })
 }
