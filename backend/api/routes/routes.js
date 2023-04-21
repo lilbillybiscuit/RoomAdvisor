@@ -32,7 +32,13 @@ module.exports = function(app) {
         .post(authcontroller.cas_passport_auth, authcontroller.authenticate);
     app.route("/api/auth/check").get(authcontroller.checkAuthenticated);
 
-    var reviewscontroller = require("../controllers/reviews/reviews");
+    var reviewscontroller = require("@controllers/reviews/reviews");
+    app.route("/reviews/:rid").get(reviewscontroller.getReviews);
+    app.route("/ratings/:rid").get(reviewscontroller.getRatings);
+    app.route("/addComment").post(reviewscontroller.addComment);
+    app.route("/comment/:uid").get(reviewscontroller.getComment);
+    app.route("/comment/:uid").put(reviewscontroller.editComment);
+     // TO DELETE
     app.route("/viewreviews").get(utilfunctions.deprecated, reviewscontroller.getReviews);
     app.route("/addFavorite").post(utilfunctions.deprecated, reviewscontroller.addFavorite);
 
