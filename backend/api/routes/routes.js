@@ -66,5 +66,12 @@ module.exports = function(app) {
     var userscontroller = require("@controllers/users/users");
     app.route("/api/users/:id").get(utilfunctions.returnSuccessNotImplemented);
 
+    const db = require('../controllers/queries');
+    app.route("/reviews/:rid").get(db.getReviews);
+    app.route("/ratings/:rid").get(db.getRatings);
+    app.route("/addComment").post(db.addComment);
+    app.route("/comment/:uid").get(db.getComment);
+    app.route("/comment/:uid").put(db.editComment);
+
 
 }
