@@ -76,7 +76,7 @@ const deleteRating = (request, response) => {
 const editComment = (request, response) => {
     const uid = parseInt(request.params.uid)
     const { review, rating } = request.body[0]
-    pool.query('UPDATE comments SET review = $1, rating = $2 WHERE uid = $3', [review, rating, uid], (error, results) => {
+    pool.query('UPDATE comments SET review = $1, rating = $2, updated_at = NOW() WHERE uid = $3', [review, rating, uid], (error, results) => {
         if (error) {
         throw error
         }
