@@ -42,6 +42,7 @@ const createReviewsTable = () => {
     CREATE TABLE comments (
       uid SERIAL PRIMARY KEY,
       netid VARCHAR(60),
+      suiteid VARCHAR(60),
       roomid VARCHAR(60),
       review TEXT NOT NULL,
       rating REAL NOT NULL,

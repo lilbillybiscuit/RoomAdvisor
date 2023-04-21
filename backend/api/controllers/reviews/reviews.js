@@ -34,6 +34,18 @@ const getComments = (request, response) => {
     
 }
 
+// get comments for suite
+
+const getCommentsSuite = (request, response) => {
+    const sid = request.params.sid
+    pool.query('SELECT * FROM comments WHERE suiteid = $1', [sid], (error, results) => {
+        if (error) {
+        throw error
+        }
+        response.status(200).json(results.rows)
+    })
+}
+
 // get reviews/ratings
 
 const getReviews = (request, response) => {
@@ -111,6 +123,7 @@ const editComment = (request, response) => {
 module.exports = { 
     getComment,
     getComments,
+    getCommentsSuite,
     getReviews,
     getRatings,
     addComment,
