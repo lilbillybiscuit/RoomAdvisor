@@ -106,3 +106,4 @@ dist
 # don't ignore configs/config.js.template, but ignore anything else in the config folder
 !backend/configs/config.js.template
 backend/configs/*.js
+backend/config.js
