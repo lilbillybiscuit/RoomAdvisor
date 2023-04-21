@@ -12,6 +12,28 @@ const getComment = (request, response) => {
     })
 }
 
+// get comments
+
+const getComments = (request, response) => {
+    const rid = request.params.rid
+    if (rid == NULL) { // if no room provided return all comments
+        pool.query('SELECT * FROM comments', (error, results) => {
+            if (error) {
+            throw error
+            }
+            response.status(200).json(results.rows)
+        })
+    } else { // if room provided return those comments
+        pool.query('SELECT * FROM comments WHERE roomid = $1', [rid], (error, results) => {
+            if (error) {
+            throw error
+            }
+            response.status(200).json(results.rows)
+        })
+    }
+    
+}
+
 // get reviews/ratings
 
 const getReviews = (request, response) => {
@@ -88,6 +110,7 @@ const editComment = (request, response) => {
 
 module.exports = { 
     getComment,
+    getComments,
     getReviews,
     getRatings,
     addComment,
