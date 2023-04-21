@@ -17,7 +17,7 @@ exports.getRooms = function (request, result) {
         if (error) {
             throw error
         }
-        result.status(200).json(results.rows)
+        return result.status(200).json(results.rows)
     })
 }
 
@@ -38,9 +38,9 @@ exports.getRoomInfo = function (request, result) {
         }
         
         if (results.rows.length == 0) {
-            result.status(404).json("Room not found.")
+            return result.status(404).json("Room not found.")
         } else {
-            result.status(200).json(results.rows)
+            return result.status(200).json(results.rows)
         }
     })
 }
@@ -142,7 +142,7 @@ exports.addRoom = async function (request, result) {
     RETURNING *`, (error, results) => {
     
         if (error) {
-            result.status(400).json("Bad Request")
+            return result.status(400).json("Bad Request")
         }
 
         return result.status(201).json(results.rows)
