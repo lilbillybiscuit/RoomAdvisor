@@ -2,9 +2,9 @@ module.exports = {
     name: "hello-world",
     version: "1.0.0",
     postgres: {
-        host: "10.211.55.26",
+        host: "localhost",
         port: 5432,
-        user: "roomadvisor",
+        user: "postgres",
         password: "password",
         database: "roomadvisor"
     },
