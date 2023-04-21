@@ -93,12 +93,15 @@ img {
     .hero-container {
         padding: 10px 0 0 0;
         margin: 0 auto;
+        background-image: url("../../static/landing_page.png");
+        background-position: bottom
     }
 
     .hero-container h1 {
         width: 100%;
         font-size: 27px;
         text-align: center;
+        padding-top: 30%;
     }
 
     .hero-container p {

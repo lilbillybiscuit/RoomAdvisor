@@ -39,7 +39,7 @@ function HeroSection({ isLoggedIn }) {
         <Button buttonStyle="btn--secondary" buttonSize="btn--medium">
           <Link to="/about" style={{ color: "white" }}>  
           {/* style={{ color: "white" }} */}
-            About
+            About Us
           </Link>
         </Button>
       </div>
@@ -50,7 +50,7 @@ function HeroSection({ isLoggedIn }) {
         </Button>
         <Button buttonStyle="btn--secondary" buttonSize="btn--medium">
           <Link to="/about" style={{ color: "white" }}>
-            About
+            About Us
           </Link>
         </Button>
       </div>
