@@ -33,11 +33,11 @@ module.exports = function(app) {
     app.route("/api/auth/check").get(authcontroller.checkAuthenticated);
 
     var reviewscontroller = require("@controllers/reviews/reviews");
-    app.route("/reviews/:rid").get(reviewscontroller.getReviews);
-    app.route("/ratings/:rid").get(reviewscontroller.getRatings);
-    app.route("/addComment").post(reviewscontroller.addComment);
-    app.route("/comment/:uid").get(reviewscontroller.getComment);
-    app.route("/comment/:uid").put(reviewscontroller.editComment);
+    app.route("/api/comment/reviews/:rid").get(reviewscontroller.getReviews);
+    app.route("/api/comment/ratings/:rid").get(reviewscontroller.getRatings);
+    app.route("/api/comment/addComment").post(reviewscontroller.addComment);
+    app.route("/api/comment/:uid").get(reviewscontroller.getComment);
+    app.route("/api/comment/:uid").put(reviewscontroller.editComment);
      // TO DELETE
     app.route("/viewreviews").get(utilfunctions.deprecated, reviewscontroller.getReviews);
     app.route("/addFavorite").post(utilfunctions.deprecated, reviewscontroller.addFavorite);
