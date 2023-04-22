@@ -1,1 +1,4 @@
 Pillow
+boto3
+pillow-heif
+requests

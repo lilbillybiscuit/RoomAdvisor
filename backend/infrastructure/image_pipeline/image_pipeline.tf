@@ -8,8 +8,13 @@ variable "prefix" {
     description = "The prefix of every resource name"
 }
 
+variable "aws_region" {
+    description = "The AWS region to deploy to"
+    default     = "us-east-2"
+}
+
 provider "aws" {
-    region = "us-east-2"
+    region = var.aws_region
 }
 
 provider archive {}
@@ -19,119 +24,72 @@ resource "aws_s3_bucket" "upload_temp" {
     bucket = "${var.prefix}-upload-temp"
 }
 
-// S3 -> SNS
+// S3 -> SQS
 resource "aws_s3_bucket_notification" "bucket_notification" {
     bucket = aws_s3_bucket.upload_temp.id
 
-    # Trigger a publish to the SNS topic from S3 using an S3 bucket notification configuration
-    # that targets the SNS topic created above
-    topic {
-        topic_arn    = aws_sns_topic.s3_topic.arn
-        events       = ["s3:ObjectCreated:*"]
-        filter_prefix = ""
-        filter_suffix = ""
+    # Trigger a publish to the SQS queue from S3 using an S3 bucket notification configuration
+    # that targets the SQS queue created below
+    queue {
+        queue_arn = aws_sqs_queue.image_queue.arn
+        # only trigger on put events
+        events = ["s3:ObjectCreated:Put"]
     }
 }
 
-// Allows S3 to publish to SNS
-data "aws_iam_policy_document" "sns_policy_data" {
+resource "aws_sqs_queue" "image_queue" {
+    name = "${var.prefix}-image-queue"
+    delay_seconds            = 1
+    max_message_size         = 2048
+    message_retention_seconds= 86400
+    receive_wait_time_seconds= 10
+    policy = data.aws_iam_policy_document.sqs_queue_policy_data.json
+}
+
+data "aws_iam_policy_document" "sqs_queue_policy_data" {
     statement {
+        sid = "AllowSQSAccess"
+
         effect = "Allow"
 
         principals {
-            type        = "Service"
-            identifiers = ["s3.amazonaws.com"]
+            type        = "AWS"
+            identifiers = ["*"]
         }
 
-        actions = ["SNS:Publish"]
+        actions = [
+            "sqs:SendMessage",
+            "sqs:ReceiveMessage",
+            "sqs:DeleteMessage",
+            "sqs:GetQueueAttributes",
+            "sqs:GetQueueUrl",
+        ]
+
         resources = [
-            "arn:aws:sns:*:${data.aws_caller_identity.current.account_id}:${var.prefix}-s3-topic"
+            # Allow access to the SQS queue created above by manually specifying the ARN
+            "arn:aws:sqs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${var.prefix}-image-queue",
         ]
 
         condition {
             test     = "ArnLike"
             variable = "aws:SourceArn"
-            values   = [aws_s3_bucket.upload_temp.arn]
+            values = [
+                # Allow access to the SQS queue created above by manually specifying the ARN
+                aws_s3_bucket.upload_temp.arn
+            ]
         }
     }
-}
-
-// Create an SNS Topic for S3 events
-resource "aws_sns_topic" "s3_topic" {
-    name   = "${var.prefix}-s3-topic"
-    policy = data.aws_iam_policy_document.sns_policy_data.json
-}
-
-
-
-// SQS Queue Policy
-resource "aws_iam_policy" "sqs_queue_policy" {
-    name = "sqs_queue_policy"
-    policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [
-            {
-                Sid = "AllowSQSAccess"
-                Effect = "Allow"
-                Action = [
-                    "sqs:SendMessage",
-                    "sqs:ReceiveMessage",
-                    "sqs:DeleteMessage",
-                    "sqs:GetQueueAttributes",
-                    "sqs:GetQueueUrl",
-                ]
-                Resource = [
-                    aws_sqs_queue.image_queue.arn,
-                ]
-            }
-        ]
-    })
-}
-
-resource "aws_iam_role_policy_attachment" "sqs_queue_policy_attachment" {
-    policy_arn = aws_iam_policy.sqs_queue_policy.arn
-    role       = aws_iam_role.lambda_exec.name
-}
-
-// SQS Queue
-resource "aws_sqs_queue" "image_queue" {
-    name                      = "${var.prefix}-image-queue"
-    delay_seconds             = 1
-    max_message_size          = 2048
-    message_retention_seconds = 86400
-    receive_wait_time_seconds = 10
-    policy                    = aws_iam_policy.sqs_queue_policy.arn
-}
-
-
-
-// SNS Topic -> SQS
-resource "aws_sns_topic_subscription" "sqs_subscription" {
-    topic_arn = aws_sns_topic.s3_topic.arn
-    protocol  = "sqs"
-    endpoint  = aws_sqs_queue.image_queue.arn
-}
-
-
-
-// LAMBDAS AND DESTINATION BUCKETS
-resource "aws_s3_bucket" "data_bucket" {
-    bucket = "${var.prefix}-data"
-}
-
-resource "aws_s3_bucket" "thumbnails_bucket" {
-    bucket = "${var.prefix}-thumbnails"
 }
 
 resource "aws_iam_role" "lambda_exec" {
     name = "${var.prefix}_lambda_exec"
 
     assume_role_policy = jsonencode({
-        Version   = "2012-10-17"
+        Version = "2012-10-17"
         Statement = [
             {
-                Action    = "sts:AssumeRole"
-                Effect    = "Allow"
+                Action = "sts:AssumeRole"
+                Effect = "Allow"
                 Principal = {
                     Service = "lambda.amazonaws.com"
                 }
@@ -139,7 +97,6 @@ resource "aws_iam_role" "lambda_exec" {
         ]
     })
 }
-
 
 resource "aws_iam_role_policy" "lambda_policy" {
     name = "${var.prefix}_lambda_policy"
@@ -159,6 +116,9 @@ resource "aws_iam_role_policy" "lambda_policy" {
                     aws_s3_bucket.upload_temp.arn,
                     aws_s3_bucket.data_bucket.arn,
                     aws_s3_bucket.thumbnails_bucket.arn,
+                    "arn:aws:s3:::${var.prefix}-upload-temp/*",
+                    "arn:aws:s3:::${var.prefix}-data/*",
+                    "arn:aws:s3:::${var.prefix}-thumbnails/*",
                 ]
             },
             {
@@ -171,20 +131,16 @@ resource "aws_iam_role_policy" "lambda_policy" {
                 Effect = "Allow"
                 Resource = "arn:aws:logs:*:*:*"
             },
-            {
-                Action = "sns:Publish"
-                Effect = "Allow"
-                Resource = aws_sns_topic.s3_topic.arn
-            },
         ]
     })
 }
 
-resource "aws_lambda_event_source_mapping" "sqs_mapping" {
-    event_source_arn = aws_sqs_queue.image_queue.arn
-    function_name    = aws_lambda_function.image_compressor.arn
-    batch_size       = 1
-    enabled          = true
+resource "aws_s3_bucket" "data_bucket" {
+    bucket = "${var.prefix}-data"
+}
+
+resource "aws_s3_bucket" "thumbnails_bucket" {
+    bucket = "${var.prefix}-thumbnails"
 }
 
 data "archive_file" "function_zip" {
@@ -206,19 +162,18 @@ resource "null_resource" "install_dependencies" {
 }
 
 data "archive_file" "dependencies_zip" {
-    type      = "zip"
-    source_dir= "${path.module}/site-packages"
+    type        = "zip"
+    source_dir  = "${path.module}/site-packages"
     output_path = "${path.module}/dependencies.zip"
     depends_on  = [null_resource.install_dependencies]
 }
 
 // create lambda layer
 resource "aws_lambda_layer_version" "python_layer" {
-    filename         = data.archive_file.dependencies_zip.output_path
-    layer_name       = "${var.prefix}-python-layer"
-    compatible_runtimes = ["python3.8"]
+    filename          = data.archive_file.dependencies_zip.output_path
+    layer_name        = "${var.prefix}-python-layer"
+    compatible_runtimes = ["python3.9"]
 }
-
 
 resource "aws_lambda_function" "image_compressor" {
     filename         = local.archive_path
@@ -226,7 +181,7 @@ resource "aws_lambda_function" "image_compressor" {
     role             = aws_iam_role.lambda_exec.arn
     handler          = "compress.lambda_handler"
     source_code_hash = data.archive_file.function_zip.output_base64sha256
-    runtime          = "python3.8"
+    runtime          = "python3.9"
     layers           = [aws_lambda_layer_version.python_layer.arn]
     environment {
         variables = {
@@ -236,10 +191,18 @@ resource "aws_lambda_function" "image_compressor" {
     }
 
     # Adjust memory and timeout as required
-    memory_size    = 512
+    memory_size    = 3000
     timeout        = 30
 
-    provisioner "local-exec" {
-        command = "pip install -r ${path.module}/requirements.txt --upgrade -t ${dirname(local.archive_path)}"
-    }
+#    provisioner "local-exec" {
+#        command = "python3.9 -m pip install -r ${path.module}/requirements.txt --upgrade -t ${dirname(local.archive_path)}"
+#    }
 }
+
+resource "aws_lambda_event_source_mapping" "sqs_mapping" {
+    event_source_arn = aws_sqs_queue.image_queue.arn
+    function_name    = aws_lambda_function.image_compressor.arn
+    batch_size       = 1
+    enabled          = true
+}
+
