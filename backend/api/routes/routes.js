@@ -2,7 +2,7 @@ const passport = require("passport");
 const authcontroller = require("../controllers/authentication/login");
 const utilfunctions = require("@utils/utilfunctions");
 const util = require("util");
-module.exports = function(app) {
+module.exports = function (app) {
     // Add all the routes to our APIs here
     // app.route([url]) points to a method, tell Express which method it should execute with
     // the .get, .post, .put, .delete, etc methods, and then pass in the method from the controller
@@ -59,7 +59,8 @@ module.exports = function(app) {
     app.route("/api/rooms").post(utilfunctions.returnSuccessNotImplemented);
 
 
-
+    var picturescontroller = require("@controllers/pictures/pictures");
+    app.route("/api/pictures/getSignedUrl").post(picturescontroller.getSignedUrl);
 
 
 

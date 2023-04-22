@@ -10,7 +10,7 @@ exports.helloworld = function (request, result) {
 }
 
 
-exports.send_simple_information = function(request, result) {
+exports.send_simple_information = function (request, result) {
     console.log(request);
     var object = {
         "name": "John",
