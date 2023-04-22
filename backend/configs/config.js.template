@@ -23,5 +23,13 @@ module.exports = {
     cloudfront: {
         header_name: "roomadvisor-cloudfront",
         header_value: "secret"
+    },
+    aws: {
+        s3: {
+         prefix: "9dujfhadjf",
+         // {prefix}-upload-temp is used for temporary user storage uploads
+         // {prefix}-data is used for permanent user file storage
+         // {prefix}-thumbnails is used for permanent user file storage of generated thumbnails
+        }
     }
 }
