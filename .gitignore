@@ -107,3 +107,4 @@ dist
 !backend/configs/config.js.template
 backend/configs/*.js
 backend/config.js
+backend/infrastructure/image_pipeline/terraform.tfvars
