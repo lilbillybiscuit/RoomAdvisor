@@ -5,16 +5,16 @@ const pool = require("@utils/database/pool");
 const AWS = require('aws-sdk');
 exports.getSignedUrl = function (request, result) {
     const s3 = new AWS.S3({
-        accessKeyId: 'AKIAZWVQQ3B5CUJJ4W6H',
+        accessKeyId: 'AKIA5OY4ERV5ZEH22UFM',
         // note: need to properly escape characters
-        secretAccessKey: 'ybOdivC\+XLW\/taB5C4muxO\/yRdsaZryQL9yyPEve',
-        region: 'us-east-1'
+        secretAccessKey: 'HAUiE3q\/\+NDJqbI3q6GODiMF1ysnsvHdW\+o1XHpm',
+        region: 'us-east-2'
     });
 
     const params = {
-        Bucket: 'buwei-roomadvisor-bucket',
+        Bucket: 'roomadvisorsandbox-upload-temp',
         // no slash in front of the key
-        Key: 'buwei-roomadvisor-bucket/hi.HEIC',
+        Key: 'roomadvisorsandbox-upload-temp/hi.HEIC',
         // need to specify content type for some reason otherwise 
         // it returns Signature does not match error
         ContentType: "image/heic",
@@ -23,7 +23,7 @@ exports.getSignedUrl = function (request, result) {
 
     const url = s3.getSignedUrl('putObject', params);
 
-    console.log(url); // log the presigned URL to the console for testing
+    // console.log(url); // log the presigned URL to the console for testing
     result.json(url);
 }
 
