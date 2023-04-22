@@ -17,6 +17,10 @@ provider "aws" {
     region = var.aws_region
 }
 
+provider "cloudflare" {
+
+}
+
 provider archive {}
 
 // Create S3 bucket for temporary uploads
@@ -115,10 +119,8 @@ resource "aws_iam_role_policy" "lambda_policy" {
                 Resource = [
                     aws_s3_bucket.upload_temp.arn,
                     aws_s3_bucket.data_bucket.arn,
-                    aws_s3_bucket.thumbnails_bucket.arn,
                     "arn:aws:s3:::${var.prefix}-upload-temp/*",
                     "arn:aws:s3:::${var.prefix}-data/*",
-                    "arn:aws:s3:::${var.prefix}-thumbnails/*",
                 ]
             },
             {
@@ -137,10 +139,6 @@ resource "aws_iam_role_policy" "lambda_policy" {
 
 resource "aws_s3_bucket" "data_bucket" {
     bucket = "${var.prefix}-data"
-}
-
-resource "aws_s3_bucket" "thumbnails_bucket" {
-    bucket = "${var.prefix}-thumbnails"
 }
 
 data "archive_file" "function_zip" {
@@ -186,7 +184,6 @@ resource "aws_lambda_function" "image_compressor" {
     environment {
         variables = {
             DATA_BUCKET      = aws_s3_bucket.data_bucket.id
-            THUMBNAIL_BUCKET = aws_s3_bucket.thumbnails_bucket.id
         }
     }
 
@@ -206,3 +203,67 @@ resource "aws_lambda_event_source_mapping" "sqs_mapping" {
     enabled          = true
 }
 
+resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
+    comment = "MyCloudFrontOAI"
+}
+
+resource "aws_s3_bucket_policy" "data_bucket_policy" {
+    bucket = aws_s3_bucket.data_bucket.id
+
+    policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+            {
+                Sid       = "Allow CloudFront access to the bucket"
+                Effect    = "Allow"
+                Principal = {
+                    AWS = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.origin_access_identity.id}"
+                }
+                Action    = [ "s3:GetObject", "s3:ListBucket" ]
+                Resource  = [
+                    aws_s3_bucket.data_bucket.arn,
+                    "${aws_s3_bucket.data_bucket.arn}/*",
+                ]
+            },
+        ]
+    })
+}
+
+resource "aws_cloudfront_distribution" "data_distribution" {
+    origin {
+        domain_name = aws_s3_bucket.data_bucket.bucket_regional_domain_name
+        origin_id   = "S3-${aws_s3_bucket.data_bucket.id}"
+    }
+
+    enabled             = true
+    is_ipv6_enabled     = true
+    comment             = "${var.prefix}-data-distribution"
+    price_class         = "PriceClass_200"
+
+    default_cache_behavior {
+        allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+        cached_methods   = ["GET", "HEAD", "OPTIONS"]
+        default_ttl      = 0
+        max_ttl          = 86400
+        min_ttl          = 0
+        forward_headers  = ["Accept-Encoding"]
+        forward_cookies  = "none"
+        forward_query_string = false
+        viewer_protocol_policy = "redirect-to-https"
+        target_origin_id = "S3-${aws_s3_bucket.data_bucket.id}"
+    }
+
+    restrictions {
+        geo_restriction {
+            restriction_type = "none"
+        }
+    }
+
+    viewer_certificate {
+        cloudfront_default_certificate = true
+    }
+}
+
+resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
+    comment = "MyCloudFrontOAI"
+}

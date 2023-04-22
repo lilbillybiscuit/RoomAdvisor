@@ -18,7 +18,6 @@ s3 = boto3.resource('s3')
 sqs = boto3.resource('sqs')
 
 data_bucket_name = os.environ['DATA_BUCKET']
-thumbnail_bucket_name = os.environ['THUMBNAIL_BUCKET']
 tmp_file_path = '/tmp/{}'
 max_image_size = 5000
 thumbnail_size = (500, 500)
@@ -104,7 +103,7 @@ def lambda_handler(event, context):
                 thumbnail_bytes = BytesIO()
                 thumbnail.save(thumbnail_bytes, result_extension, **image_options)
                 thumbnail_bytes.seek(0)
-                s3.meta.client.upload_fileobj(thumbnail_bytes, thumbnail_bucket_name, get_filename(file_key, '-thumbnail'))
+                s3.meta.client.upload_fileobj(thumbnail_bytes, data_bucket_name, get_filename(file_key, '-thumbnail'))
 
         return "Image processed successfully." + file_key
     except Exception as e:
