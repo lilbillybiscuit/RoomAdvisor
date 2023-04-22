@@ -9,6 +9,7 @@ import {
 import { db } from "../utils/firebase";
 import NavDropdownComponent from "../components/ViewReviews/Nav/NavDropdownComponent";
 import { codeToCollege, collegesToCode } from "../utils/colleges";
+import AuthChecker from "../components/AuthChecker"
 
 // TO DO
 
@@ -26,6 +27,7 @@ export default class ReviewSubmittedReviews extends Component {
     }
 
     componentDidMount() {
+        <AuthChecker />
         const suitesRef = collection(db, "Suites");
         const q = query(
             suitesRef,

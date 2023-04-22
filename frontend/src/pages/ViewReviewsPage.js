@@ -12,6 +12,7 @@ import floatingReview from "../static/review_floating.png";
 import ReviewRoomModal from "../components/ViewReviews/AddReview/ReviewRoomModal";
 import { HideOn } from "react-hide-on-scroll";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import AuthChecker from "../components/AuthChecker"
 
 // TO DO
 
@@ -129,6 +130,9 @@ class ViewReviews extends Component {
   };
 
   componentDidMount() {
+
+    <AuthChecker />
+
     document.addEventListener("click", this.handleModalOpen);
 
     // Update suite info practice
@@ -159,6 +163,7 @@ class ViewReviews extends Component {
   }
 
   componentDidUpdate() {
+    <AuthChecker />
     // Handle building change here
     if (this.state.building === this.state.oldBuildingState) return;
 
@@ -192,6 +197,7 @@ class ViewReviews extends Component {
   }
 
   componentWillUnmount() {
+    <AuthChecker />
     document.removeEventListener("click", this.handleModalOpen);
     // Remove any suites with persisted likes first
     const allSuitesForSelectedCollege = this.removeAllFavoriteSuites(

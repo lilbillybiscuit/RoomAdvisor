@@ -14,7 +14,8 @@ import { codeToCollege } from "../utils/colleges";
 import { LoadingOverlay } from "@mantine/core";
 import { Link } from "react-router-dom";
 import "./FavoritesPage.css";
-import constants from "../constants"
+import { serverIp } from "../constants"
+import AuthChecker from "../components/AuthChecker"
 
 // TODO
 
@@ -31,6 +32,7 @@ export default class FavoritesPage extends Component {
   }
 
   componentDidMount() {
+    <AuthChecker />
     document.addEventListener("click", this.handleModalOpen);
 
     var favoriteDocRefs = [];
@@ -48,7 +50,7 @@ export default class FavoritesPage extends Component {
     const suiteRef = collection(db, "Suites");
     const q = query(suiteRef, where(documentId(), "in", favoriteDocRefs));
 
-    fetch(`${constants.serverIp}/suites/fafsdf`, { // gets a specific suite by id fafsdf
+    fetch(`${serverIp}/suites/fafsdf`, { // gets a specific suite by id fafsdf
       credentials: "include"
     }).then((res => {
           if(res.status === 200) {
@@ -77,6 +79,7 @@ export default class FavoritesPage extends Component {
   }
 
   componentWillUnmount() {
+    <AuthChecker />
     document.removeEventListener("click", this.handleModalOpen);
     this.setState({ ...this.state, loading: true });
   }

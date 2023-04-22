@@ -9,7 +9,7 @@ function LandingRegisterProtected({ casUser }) {
     <Router>
       <div className="App">
         <div>
-          {!casUser ? (
+          {casUser ? (
             <UnprotectedPages />
           ) : (
             <RegisterandProtectedPages casUser={casUser} />

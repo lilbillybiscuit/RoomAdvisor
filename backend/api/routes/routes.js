@@ -39,6 +39,7 @@ module.exports = function(app) {
     app.route("/api/comments/comment/:uid").get(reviewscontroller.getComment);
     app.route("/api/comments/:rid").get(reviewscontroller.getComments);
     app.route("/api/comments/comment/:uid").put(reviewscontroller.editComment);
+    
      // TO DELETE
     app.route("/viewreviews").get(utilfunctions.deprecated, reviewscontroller.getReviews);
     app.route("/addFavorite").post(utilfunctions.deprecated, reviewscontroller.addFavorite);

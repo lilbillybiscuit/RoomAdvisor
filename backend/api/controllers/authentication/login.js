@@ -41,7 +41,7 @@ exports.authenticate = function (request, result) {
     // INSTEAD OF JUST REDIRECTING, SET USER NETID ON A COOKIE
     // RETRIEVE THE COOKIE FROM /auth/login/success
     console.log("redirect to check user validity");
-    result.redirect(`${CLIENT_URL}/home`);
+    result.redirect(`${CLIENT_URL}/viewreviews`);
     
 }
 
