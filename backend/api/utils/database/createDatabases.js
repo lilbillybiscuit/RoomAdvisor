@@ -39,13 +39,12 @@ const createItemsTable = () => {
 // create reviews table
 const createReviewsTable = () => {
     const queryText = `
-    CREATE TABLE reviews (
-      review_id SERIAL PRIMARY KEY,
-      item_id INTEGER REFERENCES items(item_id),
-      user_id INTEGER REFERENCES users(user_id),
-      rating INTEGER NOT NULL,
-      title VARCHAR(100),
-      text TEXT NOT NULL,
+    CREATE TABLE comments (
+      uid SERIAL PRIMARY KEY,
+      netid VARCHAR(60),
+      roomid VARCHAR(60),
+      review TEXT NOT NULL,
+      rating REAL NOT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMP NOT NULL DEFAULT NOW()
     )
