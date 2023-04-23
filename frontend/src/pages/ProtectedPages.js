@@ -2,10 +2,10 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 
 // import LandingPage from "./LandingPage";
 // import RegisterPage from "./RegisterPage";
-// import ViewReviews from "../components/ViewReviews";
+// import ViewReviews from "src/components/ViewReviews";
 // import AboutPage from "./AboutPage";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { db } from "../utils/firebase";
+import { db } from "src/services/firebase/firebase";
 import {
   getDoc,
   updateDoc,
@@ -13,16 +13,16 @@ import {
   arrayRemove,
   doc,
 } from "firebase/firestore";
-import { cryptoKey } from "../constants";
+import { cryptoKey } from "src/constants";
 import { sha256 } from "js-sha256";
 import { LoadingOverlay } from "@mantine/core";
-import TIME from "../utils/try";
-import ReviewSubmittedReviews from "./ReviewSubmittedReviews";
-const LandingPage = lazy(() => import("./LandingPage"));
-const RegisterPage = lazy(() => import("./RegisterPage"));
-const ViewReviews = lazy(() => import("./ViewReviewsPage"));
-const AboutPage = lazy(() => import("./AboutPage"));
-const FavoritesPage = lazy(() => import("./FavoritesPage"));
+import TIME from "src/services/data/try";
+import ReviewSubmittedReviews from "src/pages/ReviewSubmittedReviews/ReviewSubmittedReviews";
+const LandingPage = lazy(() => import("./LandingPage/LandingPage"));
+const RegisterPage = lazy(() => import("./RegisterPage/RegisterPage"));
+const ViewReviews = lazy(() => import("src/pages/ViewReviewsPage/ViewReviewsPage"));
+const AboutPage = lazy(() => import("src/pages/AboutPage/AboutPage"));
+const FavoritesPage = lazy(() => import("./FavoritesPage/FavoritesPage"));
 
 // TO DO
 

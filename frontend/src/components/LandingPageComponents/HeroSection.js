@@ -1,10 +1,10 @@
 import "./HeroSection.css";
 import React from "react";
-import { Button } from "../Button";
+import { Button } from "src/components/Button/Button";
 import LoginComponent from "./Login";
 import { Link } from "react-router-dom";
 
-function HeroSection({ isLoggedIn }) {
+function HeroSection() {
   return (
     <div className="hero-container">
       <h1>Choosing a room just got easier</h1>
@@ -27,14 +27,14 @@ function HeroSection({ isLoggedIn }) {
 
       <div className="lg-screen-button">
         <Button buttonStyle="btn--primary" buttonSize="btn--medium">
-          <LoginComponent isLoggedIn={isLoggedIn} />
+          <LoginComponent/>
         </Button>
       </div>
 
       <div className="sm-screen-buttons">
         <div className="sm-screen-button">
           <Button buttonStyle="btn--primary" buttonSize="btn--medium">
-            <LoginComponent isLoggedIn={isLoggedIn} />
+            <LoginComponent/>
           </Button>
         </div>
 

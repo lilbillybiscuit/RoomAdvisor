@@ -1,7 +1,4 @@
-const passport = require("passport");
-const authcontroller = require("../controllers/authentication/login");
 const utilfunctions = require("@utils/utilfunctions");
-const util = require("util");
 module.exports = function(app) {
     // Add all the routes to our APIs here
     // app.route([url]) points to a method, tell Express which method it should execute with
@@ -11,7 +8,7 @@ module.exports = function(app) {
     // For now, just think of a controller as a group of API methods in the same category, or are
     // related to each other in some way.
 
-    var simplecontroller = require("../controllers/simplecontroller");
+    var simplecontroller = require("@controllers/simplecontroller");
     app.route('/api/helloworld').get(simplecontroller.helloworld);
     app.route('/api/cool').get(simplecontroller.send_simple_information);
 
@@ -23,13 +20,15 @@ module.exports = function(app) {
     app.route("/auth/login/failed").get(utilfunctions.deprecated, authcontroller.loginFailed); // Deprecated
     app.route("/auth/cas/logout").get(utilfunctions.deprecated, authcontroller.logout); // Deprecated
     app.route("/auth/cas") // Deprecated
-        .get(utilfunctions.deprecated, authcontroller.cas_passport_auth, authcontroller.authenticate)
+        .get(utilfunctions.deprecated, authcontroller.cas_passport_auth)
 
     app.route("/api/auth/login/success").get(authcontroller.loginSuccess);
     app.route("/api/auth/login/failed").get(authcontroller.loginFailed);
     app.route("/api/auth/logout").get(authcontroller.logout);
     app.route("/api/auth/login")
-        .post(authcontroller.cas_passport_auth, authcontroller.authenticate);
+        .get(authcontroller.cas_passport_auth)
+        .post(authcontroller.cas_passport_auth);
+
     app.route("/api/auth/check").get(authcontroller.checkAuthenticated);
 
     var reviewscontroller = require("@controllers/reviews/reviews");
@@ -39,9 +38,10 @@ module.exports = function(app) {
     app.route("/api/comments/comment/:uid").get(reviewscontroller.getComment);
     app.route("/api/comments/:rid").get(reviewscontroller.getComments);
     app.route("/api/comments/comment/:uid").put(reviewscontroller.editComment);
+    
      // TO DELETE
     app.route("/viewreviews").get(utilfunctions.deprecated, reviewscontroller.getReviews);
-    app.route("/addFavorite").post(utilfunctions.deprecated, reviewscontroller.addFavorite);
+    // app.route("/addFavorite").post(utilfunctions.deprecated, reviewscontroller.addFavorite);
 
     app.route("/api/reviews").get(utilfunctions.returnSuccessNotImplemented);
     app.route("/api/reviews").post(utilfunctions.returnSuccessNotImplemented);
@@ -63,7 +63,9 @@ module.exports = function(app) {
     app.route("/api/rooms/:id").get(roomscontroller.getRooms);
     app.route("/api/rooms/:id").put(roomscontroller.modRoom);
     app.route("/api/rooms/:id").delete(roomscontroller.delRoom);
-    
+
     var userscontroller = require("@controllers/users/users");
     app.route("/api/users/:id").get(utilfunctions.returnSuccessNotImplemented);
+    var errors = require("@controllers/errors/errors");
+    app.route("*", errors.notFound);
 }

@@ -1,7 +1,7 @@
 import "./ResultSortByComponent.css";
 import React, { Component } from "react";
 import Select from "react-select";
-import { sortOptions } from "../../../utils/colleges";
+import { sortOptions } from 'src/services/data/colleges';
 
 export default class SortByComponent extends Component {
   constructor(props) {

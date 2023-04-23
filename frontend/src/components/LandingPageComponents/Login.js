@@ -1,24 +1,16 @@
 import React from "react";
-import { serverIp } from "../../constants";
-import { useNavigate } from "react-router-dom";
 
-function LoginComponent({ isLoggedIn }) {
+function LoginComponent() {
   const casLogin = () => {
     console.log("casLogin");
-    window.open(`${serverIp}/auth/login`, "_self");
-  };
-
-  const navigate = useNavigate();
-
-  const redirectLogin = () => {
-    navigate("/viewreviews");
+    window.open(`/api/auth/login`, "_self");
   };
 
   return (
     <div className="login-button-container">
       <div
         className="login-button"
-        onClick={!isLoggedIn ? casLogin : redirectLogin}
+        onClick={casLogin}
       >
         Login with CAS
       </div>
