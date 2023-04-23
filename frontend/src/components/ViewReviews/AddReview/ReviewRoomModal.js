@@ -1,14 +1,14 @@
 import "./ReviewRoomModal.css";
 import React, { Component } from "react";
-import { Button } from "../../Button";
+import { Button } from "src/components/Button/Button";
 import { Autocomplete, Textarea, Slider } from "@mantine/core";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Compress from "browser-image-compression";
 import { ThemeProvider } from "react-bootstrap";
 import { createTheme } from "@mui/material/styles";
-import { codeToCollege } from "../../../utils/colleges";
-import received from "../../../static/review-received.svg";
-import compressing from "../../../static/compressing-images.svg";
+import { codeToCollege } from 'src/services/data/colleges';
+import received from "src/images/review-received.svg";
+import compressing from "src/images/compressing-images.svg";
 
 // TO DO
 

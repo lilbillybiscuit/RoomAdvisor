@@ -1,19 +1,13 @@
-
 const passport = require("passport");
-const isBeta = process.env.NODE_ENV === "beta";
 var CLIENT_URL = "http://localhost:3000" || process.env.CLIENT_URL;
 
 exports.loginSuccess = function (request, result) {
-    console.log("login success?");
-    if (request.user) {
-        return result.status(200).json({
-            success: true,
-            message: "Successfully logged in with CAS",
-            user: request.user,
-            cookies: request.cookies,
-        });
+    if (request.isAuthenticated()) {
+        // redirect user to frontend at /home
+        result.redirect(`${CLIENT_URL}/home`);
+        return;
     }
-    return result.status(200).json({
+    return result.status(401).json({
         success: false,
         message: "Failed to Login with CAS",
     });
@@ -27,33 +21,29 @@ exports.loginFailed = function (request, result) {
 }
 
 exports.logout = function (request, result) {
-    console.log("here in logout");
     request.logout();
-    result.redirect(`${CLIENT_URL}/logout`); // what...?
+    result.redirect(`${CLIENT_URL}/logout`);
 }
 
 // const yalecas = require("./strategies/yale-cas");
-exports.cas_passport_auth = passport.authenticate("yalecas", { failureRedirect: "/api/auth/login/failed" })
-
-exports.authenticate = function (request, result) {
-    // Successful authentication, redirect check if user is valid.
-
-    // INSTEAD OF JUST REDIRECTING, SET USER NETID ON A COOKIE
-    // RETRIEVE THE COOKIE FROM /auth/login/success
-    console.log("redirect to check user validity");
-    result.redirect(`${CLIENT_URL}/viewreviews`);
-    
-}
+exports.cas_passport_auth = passport.authenticate("yalecas",
+    {
+        failureRedirect: "/api/auth/login/failed",
+        successRedirect: "/api/auth/login/success"
+    }
+)
 
 exports.checkAuthenticated = function (request, result) {
     if (request.isAuthenticated()) {
         return result.status(200).json({
-            success: true,
+            authenticated: true,
             message: "User is authenticated",
+            user_id: request.user.id,
+            user_name: request.user.displayName,
         });
     }
-    return result.status(401).json({
-        success: false,
+    return result.status(200).json({
+        authenticated: false,
         message: "User is not authenticated",
     });
 }
