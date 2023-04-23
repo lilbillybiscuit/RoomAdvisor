@@ -2,6 +2,7 @@ const config = require("@config");
 const pool = require("@utils/database/pool");
 // I'm not sure if you actually need these I just chugged them in here
 
+const uuid = require('uuid');
 const AWS = require('aws-sdk');
 exports.getSignedUrl = function (request, result) {
     const s3 = new AWS.S3({
