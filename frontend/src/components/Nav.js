@@ -6,7 +6,6 @@ import NavDropdownComponent from "src/components/ViewReviews/Nav/NavDropdownComp
 import NavDropdownMultiselect from "src/components/ViewReviews/Nav/NavDropdownMultiselect/NavDropdownMultiselect";
 import NavSearchBar from "src/components/ViewReviews/Nav/NavSearchBar/NavSearchBar";
 import { Bookmark, BoxArrowRight } from "react-bootstrap-icons";
-import LoginObject from 'src/services/authentication/LoginObject'
 
 export default class Nav extends Component {
   constructor(props) {
@@ -69,7 +68,6 @@ export default class Nav extends Component {
   render() {
     return (
       <>
-        <LoginObject />
       <div className="container" ref={this.container}>
         <div className="navbar-header">
           <header>

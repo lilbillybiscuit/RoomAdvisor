@@ -1,6 +1,7 @@
 import React from "react";
 
-export default function HeroSection() {
+import HeroSection from "src/components/LandingPageComponents/HeroSection";
+export default function LandingPageHeroSection() {
   return (
     <div className="hero">
       <HeroSection/>

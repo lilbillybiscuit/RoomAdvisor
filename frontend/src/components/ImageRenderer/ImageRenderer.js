@@ -1,7 +1,7 @@
 import "./ImageRenderer.css";
 import React, { useState, useRef } from "react";
 import classnames from "classnames";
-import { useIntersection } from "./IntersectionObserver";
+import { useIntersection } from "src/components/IntersectionObserver";
 
 const ImageRenderer = ({ alt, url, thumb, width, height }) => {
   const [isLoaded, setIsLoaded] = useState(false);
