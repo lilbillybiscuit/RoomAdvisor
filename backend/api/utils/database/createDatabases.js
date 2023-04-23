@@ -85,13 +85,67 @@ const createImagesTable = () => {
     return pool.query(queryText);
 };
 
+const createSuitesTable = () => {
+    const queryText = `
+    CREATE TABLE suites (
+      id varchar(255),
+      college varchar(255),
+      entryway varchar(255),
+      suite_number varchar(255),
+      accessible boolean,
+      pictures varchar(255)[],
+      size float,
+      owners varchar(255)[],
+      numpeople integer,
+      numdoubles integer,
+      numsingles integer,
+      rooms varchar(255)[]
+    )
+    `
+
+    return pool.query(queryText)
+}
+
+const createRoomsTable = () => {
+  const queryText = `
+  CREATE TABLE rooms (
+    id varchar(255),
+    suite varchar(255),
+    tag varchar(255),
+    accessible boolean,
+    pictures varchar(255)[],
+    size float,
+    owners varchar(255)[],
+    single boolean,
+    standalone boolean
+  )  
+  `
+
+  return pool.query(queryText)
+}
+
+const createOwnersTable = () => {
+  const queryText = `
+  CREATE TABLE owners (
+    user_id varchar(255),
+    name varchar(255),
+    url varchar(255)
+  )
+  `
+
+  return pool.query(queryText)
+}
+
 // execute all table creation queries
 Promise.all([
     createUsersTable(),
     createItemsTable(),
     createReviewsTable(),
     createCommentsTable(),
-    createImagesTable()
+    createImagesTable(),
+    createSuitesTable(),
+    createRoomsTable(),
+    createOwnersTable()
 ])
     .then(() => console.log('Tables created successfully'))
     .catch(error => console.error('Error creating tables', error))
