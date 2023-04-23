@@ -65,7 +65,7 @@ img {
 
 @media (min-width: 768px) {
     .hero-container {
-        background-image: url("../../static/landing_page.png");
+        background-image: url("../../images/landing_page.png");
     }
 
     .mobile-para {

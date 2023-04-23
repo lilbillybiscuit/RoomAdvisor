@@ -8,14 +8,8 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const passport = require("passport");
 // Initialize passport strategies
-const YaleCASStrategy = require("@controllers/authentication/strategies/yale-cas");
-passport.use('yalecas', YaleCASStrategy);
-passport.serializeUser( (user, done) => {
-    done(null, user);
-});
-passport.deserializeUser( (user, done) => {
-    done(null, user);
-})
+var strategies = require("@controllers/authentication/strategies");
+strategies(passport);
 
 
 // Declare external packages
@@ -43,7 +37,7 @@ if (isProduction) {
             }),
             secret: config.session.secret,
             resave: false,
-            saveUninitialized: false,
+            saveUninitialized: true,
             secure: true,
             httpOnly: true,
             cookie: {
@@ -64,10 +58,16 @@ if (isProduction) {
     app.use(session({
         secret: "f9aisdf",
         resave: false,
-        saveUninitialized: false,
+        saveUninitialized: true,
+        store: new pgSession({
+            pool: require("@utils/database/pool"),
+            tableName: "session",
+            createTableIfMissing: true,
+        }),
         cookie: {
             maxAge: config.session.cookie.maxAge,
-            secure: config.session.cookie.secure,
+            secure: false,
+
         }
     }));
 
@@ -80,7 +80,6 @@ if (isProduction) {
         })
     );
 }
-
 
 app.use(passport.initialize());
 app.use(passport.session());

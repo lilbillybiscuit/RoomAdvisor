@@ -1,12 +1,11 @@
 import "./Nav.css";
 import React, { Component, createRef } from "react";
 import { NavLink } from "react-router-dom";
-import logo from "../static/logo.png";
-import NavDropdownComponent from "./ViewReviews/Nav/NavDropdownComponent";
-import NavDropdownMultiselect from "./ViewReviews/Nav/NavDropdownMultiselect";
-import NavSearchBar from "./ViewReviews/Nav/NavSearchBar";
+import logo from "src/images/logo.png";
+import NavDropdownComponent from "src/components/ViewReviews/Nav/NavDropdownComponent/NavDropdownComponent";
+import NavDropdownMultiselect from "src/components/ViewReviews/Nav/NavDropdownMultiselect/NavDropdownMultiselect";
+import NavSearchBar from "src/components/ViewReviews/Nav/NavSearchBar/NavSearchBar";
 import { Bookmark, BoxArrowRight } from "react-bootstrap-icons";
-import AuthChecker from "../components/AuthChecker"
 
 export default class Nav extends Component {
   constructor(props) {
@@ -19,12 +18,10 @@ export default class Nav extends Component {
 
   // Ensure that when the user clicks outside the navbar, you close it
   componentDidMount() {
-    <AuthChecker />
     document.addEventListener("mousedown", this.handleClickOutside);
   }
 
   componentWillUnmount() {
-    <AuthChecker />
     document.removeEventListener("mousedown", this.handleClickOutside);
   }
 
@@ -70,6 +67,7 @@ export default class Nav extends Component {
 
   render() {
     return (
+      <>
       <div className="container" ref={this.container}>
         <div className="navbar-header">
           <header>
@@ -175,6 +173,7 @@ export default class Nav extends Component {
           </header>
         </div>
       </div>
+      </>
     );
   }
 }
