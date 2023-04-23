@@ -17,7 +17,10 @@ exports.getSuites = function (request, result) {
     const numdoubles_req = request.body.numdoubles || '%';
 
     //Get suites based on those parameters
-    pool.query(`SELECT * FROM roomadvisor_suites WHERE college like '${college_req}' AND entryway like '${entryway_req}' AND numpeople::text like '${numpeople_req}' AND numsingles::text like '${numsingles_req}' AND numdoubles::text like '${numdoubles_req}'`, (error, results) => {
+    pool.query(`SELECT * FROM suites WHERE college like '${college_req}'
+    AND entryway like '${entryway_req}' AND numpeople::text like '${numpeople_req}'
+    AND numsingles::text like '${numsingles_req}' AND numdoubles::text like
+    '${numdoubles_req}'`, (error, results) => {
         if (error) {
             throw error
         }
@@ -36,7 +39,7 @@ exports.getSuiteInfo = function (request, result) {
 
     const suite_id = request.params.id
 
-    pool.query(`SELECT * FROM roomadvisor_suites WHERE id like '${suite_id}'`, (error, results) => {
+    pool.query(`SELECT * FROM suites WHERE id like '${suite_id}'`, (error, results) => {
 
         if (error) {
             throw error
@@ -120,7 +123,7 @@ exports.addSuite = function (request, result) {
     }
 
     //Insert variables into sql array
-    pool.query(`INSERT INTO roomadvisor_suites
+    pool.query(`INSERT INTO suites
     (id, college, entryway, suite_number, accessible, pictures, size, owners,
     numpeople, numdoubles, numsingles, rooms)
     VALUES ('${new_id}', '${college_req}', '${entryway_req}', '${suite_number_req}',
@@ -176,12 +179,12 @@ function updateOwnersAndCreateArr(owners) {
         }
 
         //See if owner already exists
-        pool.query(`SELECT * from roomadvisor_owners WHERE user_id like '${user_id_req}'`, (err, res) => {
+        pool.query(`SELECT * from owners WHERE user_id like '${user_id_req}'`, (err, res) => {
 
             //If not, insert it into owner table
             if(res.rows.length === 0) {
-                pool.query(`BEGIN; INSERT INTO roomadvisor_owners (user_id, name, url)
-            VALUES ('${user_id_req}', '${name_req}', '${url_req}'); COMMIT;`, (error, results) => {
+                pool.query(`INSERT INTO owners (user_id, name, url)
+            VALUES ('${user_id_req}', '${name_req}', '${url_req}')`, (error, results) => {
                 
                 if(error) {
                     return "bad"
@@ -191,8 +194,8 @@ function updateOwnersAndCreateArr(owners) {
 
             //Otherwise, update its data if necessary
             } else {
-                pool.query(`BEGIN; UPDATE roomadvisor_owners SET name = '${name_req}', url = '${url_req}' WHERE
-                user_id like '${user_id_req}'; COMMIT;`
+                pool.query(`UPDATE owners SET name = '${name_req}', url = '${url_req}' WHERE
+                user_id like '${user_id_req}'`
                 , (error, results) => {
                 
                 if(error) {
@@ -211,8 +214,6 @@ function updateOwnersAndCreateArr(owners) {
     return res
 }
 
-
-
 /**
  * delSuite deletes a suite based on a given suite ID
  * request params = suite ID
@@ -223,11 +224,11 @@ exports.delSuite = function (request, result) {
     del_id = request.params.id
 
     //Check if suite exists, and delete it if so
-    pool.query(`SELECT * from roomadvisor_suites WHERE id like '${del_id}'`, (err, res) => {
+    pool.query(`SELECT * from suites WHERE id like '${del_id}'`, (err, res) => {
         if(res.rows.length == 0) {
             return result.status(404).json("Suite not found.")
         } else {
-            pool.query(`DELETE FROM roomadvisor_suites WHERE id like '${del_id}'`, (error, results) => {      
+            pool.query(`DELETE FROM suites WHERE id like '${del_id}'`, (error, results) => {      
                 return result.status(204).json("")
             })
         }
@@ -261,7 +262,7 @@ exports.modSuite = function (request, result) {
     var rooms_req = request.body.rooms || ""
 
     //HARD CODED check each suite variable to see if it needs to be updated
-    var query_str = "UPDATE roomadvisor_suites SET "
+    var query_str = "UPDATE suites SET "
 
     if(college_req != "") {
         query_str += "college = \'" + college_req + "\', "
@@ -287,6 +288,7 @@ exports.modSuite = function (request, result) {
         query_str += "size = \'" + size_req + "\', "
     }
 
+    //Similar function as in addSuite, adds and updates owners table
     if(owners_req != "") {
         owners_req = updateOwnersAndCreateArr(owners_req)
         query_str += "owners = \'" + owners_req + "\', "

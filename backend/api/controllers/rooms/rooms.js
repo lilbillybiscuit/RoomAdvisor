@@ -13,7 +13,7 @@ exports.getRooms = function (request, result) {
     const suite_id = request.params.id;
 
     //Get suites based on those parameters
-    pool.query(`SELECT * FROM roomadvisor_rooms WHERE suite like '${suite_id}'`, (error, results) => {
+    pool.query(`SELECT * FROM rooms WHERE suite like '${suite_id}'`, (error, results) => {
         if (error) {
             throw error
         }
@@ -31,7 +31,7 @@ exports.getRooms = function (request, result) {
 exports.getRoomInfo = function (request, result) {
     const room_id = request.query.room_id
 
-    pool.query(`SELECT * FROM roomadvisor_rooms WHERE id like '${room_id}'`, (error, results) => {
+    pool.query(`SELECT * FROM rooms WHERE id like '${room_id}'`, (error, results) => {
 
         if (error) {
             throw error
@@ -135,7 +135,7 @@ exports.addRoom = async function (request, result) {
     }
 
     //Insert variables into sql array
-    pool.query(`INSERT INTO roomadvisor_rooms
+    pool.query(`INSERT INTO rooms
     (id, suite, tag, accessible, pictures, size, owners, single, standalone)
     VALUES ('${new_id}', '${suite_req}', '${tag_req}', '${accessible_req}',
     '${pictures_req}', '${size_req}', '${owners_req}', '${single_req}', '${standalone_req}')
@@ -165,7 +165,7 @@ async function createIDFromSuite(suite_id, room_tag) {
 
     res = id + "-" + suite_parts[suite_parts.length - 2] + "-room" + room_tag
 
-    var rooms_all = await pool.query(`SELECT rooms from roomadvisor_suites WHERE id like
+    var rooms_all = await pool.query(`SELECT rooms from suites WHERE id like
     '${suite_id}';`)
 
     if(rooms_all.rows.length === 0) {
@@ -174,16 +174,13 @@ async function createIDFromSuite(suite_id, room_tag) {
 
     rooms_all = rooms_all.rows[0].rooms
 
-
-
-    ///////THIS USES THE API TO PUSH TO THE DATABASE. PLEASE CHANGE
-    rooms_all.push("https://example.roomadvisor.io/api/rooms/" + res)
+    rooms_all.push("/api/rooms/" + res)
 
 
     rooms_all = JSON.stringify(rooms_all).replace("[", "{").replace("]", "}")
 
-    //Pushes new room into roomadvisor_suite array
-    pool.query(`UPDATE roomadvisor_suites SET rooms = '${rooms_all}' WHERE id
+    //Pushes new room into suites table
+    pool.query(`UPDATE suites SET rooms = '${rooms_all}' WHERE id
     like '${suite_id}'`, (error, results) => {
         if (error) {
             throw error;
@@ -219,14 +216,14 @@ function createIDAndSuite(room_data, pictures, owners) {
 
     suite_id = createStandaloneSuiteID(room_data.college, room_data.entryway, room_data.tag)
     created_id = createRoomID(suite_id, room_data.tag)
-    id_for_rooms = "https://example.roomadvisor.io/api/rooms/" + created_id
+    id_for_rooms = "/api/rooms/" + created_id
 
     rooms = `{"${id_for_rooms}"}`
     if(room_data.college == null || room_data.entryway == null) {
         return "bad"
     }
 
-    pool.query(`INSERT INTO roomadvisor_suites (id, college, entryway, suite_number,
+    pool.query(`INSERT INTO suites (id, college, entryway, suite_number,
         accessible, pictures, size, owners, numpeople, numdoubles, numsingles, rooms)
         VALUES ('${suite_id}', '${room_data.college}', '${room_data.entryway}',
         '${room_data.tag}', '${room_data.accessible}', '${pictures}', '${room_data.size}',
@@ -278,12 +275,12 @@ function updateOwnersAndCreateArr(owners) {
         }
 
         //See if owner already exists
-        pool.query(`SELECT * from roomadvisor_owners WHERE user_id like '${user_id_req}'`, (err, res) => {
+        pool.query(`SELECT * from owners WHERE user_id like '${user_id_req}'`, (err, res) => {
 
             //If not, insert it into owner table
             if(res.rows.length === 0) {
-                pool.query(`BEGIN; INSERT INTO roomadvisor_owners (user_id, name, url)
-            VALUES ('${user_id_req}', '${name_req}', '${url_req}'); COMMIT;`, (error, results) => {
+                pool.query(`INSERT INTO owners (user_id, name, url)
+            VALUES ('${user_id_req}', '${name_req}', '${url_req}')`, (error, results) => {
                 
                 if(error) {
                     return "bad"
@@ -293,8 +290,8 @@ function updateOwnersAndCreateArr(owners) {
 
             //Otherwise, update its data if necessary
             } else {
-                pool.query(`BEGIN; UPDATE roomadvisor_owners SET name = '${name_req}', url = '${url_req}' WHERE
-                user_id like '${user_id_req}'; COMMIT;`
+                pool.query(`UPDATE owners SET name = '${name_req}', url = '${url_req}' WHERE
+                user_id like '${user_id_req}'`
                 , (error, results) => {
                 
                 if(error) {
@@ -319,7 +316,6 @@ function updateOwnersAndCreateArr(owners) {
 }
 
 
-
 /**
  * delRoom deletes a room based on a given room ID
  * request params = room ID
@@ -330,7 +326,7 @@ exports.delRoom = function (request, result) {
     del_id = request.params.id
 
     //Check if room exists
-    pool.query(`SELECT * from roomadvisor_rooms WHERE id like '${del_id}'`, (err, res) => {
+    pool.query(`SELECT * from rooms WHERE id like '${del_id}'`, (err, res) => {
         if(res.rows.length == 0) {
             return result.status(404).json("Room not found.")
         } 
@@ -338,14 +334,14 @@ exports.delRoom = function (request, result) {
         //If it does exist, and the room is standalone
         else if(res.rows[0].standalone) {
             //Delete the related suite object
-            pool.query(`DELETE FROM roomadvisor_suites WHERE id like '${res.rows[0].suite}'`, (error, results) => {
+            pool.query(`DELETE FROM suites WHERE id like '${res.rows[0].suite}'`, (error, results) => {
                 if (error) {
                     throw error;
                 }
             })
 
             //Delete the related room object
-            pool.query(`DELETE FROM roomadvisor_rooms WHERE id like '${del_id}'`, (error, results) => {      
+            pool.query(`DELETE FROM rooms WHERE id like '${del_id}'`, (error, results) => {      
                 return result.status(200).json({
                     message: "Room " + del_id + " deleted successfully",
                 })
@@ -354,7 +350,7 @@ exports.delRoom = function (request, result) {
         //If the room exists, and it is not standalone
         else {
             //Get list of rooms from suite
-            pool.query(`SELECT rooms from roomadvisor_suites WHERE id like
+            pool.query(`SELECT rooms from suites WHERE id like
             '${res.rows[0].suite}'`, (error, results) => {
                 if (error) {
                     throw error;
@@ -363,12 +359,12 @@ exports.delRoom = function (request, result) {
                 rooms_lst = results.rows[0].rooms
 
                 //Remove the room we are deleting
-                rooms_lst.splice(rooms_lst.indexOf("https://example.roomadvisor.io/api/rooms/" + del_id), 1)
+                rooms_lst.splice(rooms_lst.indexOf("/api/rooms/" + del_id), 1)
 
                 rooms_lst = JSON.stringify(rooms_lst).replace("[", "{").replace("]", "}")
 
                 //Update suite with new rooms array
-                pool.query(`UPDATE roomadvisor_suites SET rooms = '${rooms_lst}' WHERE id
+                pool.query(`UPDATE suites SET rooms = '${rooms_lst}' WHERE id
                 like '${res.rows[0].suite}'`, (error, results) => {
                     if (error) {
                         throw error;
@@ -378,7 +374,7 @@ exports.delRoom = function (request, result) {
             })
 
             //Delete the room
-            pool.query(`DELETE FROM roomadvisor_rooms WHERE id like '${del_id}'`, (error, results) => {      
+            pool.query(`DELETE FROM rooms WHERE id like '${del_id}'`, (error, results) => {      
                 return result.status(200).json({
                     message: "Room " + del_id + " deleted successfully",
                 })
@@ -411,7 +407,7 @@ exports.modRoom = function (request, result) {
     var single_req = request.body.single || ""
 
     //HARD CODED check each room variable to see if it needs to be updated
-    var query_str = "UPDATE roomadvisor_rooms SET "
+    var query_str = "UPDATE rooms SET "
 
     if(tag_req != "") {
         query_str += "tag = \'" + tag_req + "\', "
