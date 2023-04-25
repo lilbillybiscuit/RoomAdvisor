@@ -5,8 +5,6 @@ import Results from "src/components/ViewReviews/Results/Results";
 import { codeToCollege, collegesToCode } from "src/services/data/colleges";
 import CardsContainer from "src/components/ViewReviews/Suites/CardsContainer/CardsContainer";
 import ModalContainer from "src/components/ViewReviews/GeneralModal";
-// import { db } from "src/services/firebase/firebase";
-// import { collection, getDocs, query, where } from "firebase/firestore";
 import { LoadingOverlay } from "@mantine/core";
 import floatingReview from "src/images/review_floating.png";
 import ReviewRoomModal from "src/components/ViewReviews/AddReview/ReviewRoomModal";
