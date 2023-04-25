@@ -144,7 +144,7 @@ class ViewReviews extends Component {
 
   componentDidMount() {
 
-    <AuthChecker />
+    <LoginObject />
 
     document.addEventListener("click", this.handleModalOpen);
 
@@ -176,7 +176,7 @@ class ViewReviews extends Component {
   }
 
   componentDidUpdate() {
-    <AuthChecker />
+    <LoginObject />
     // Handle building change here
     if (this.state.building === this.state.oldBuildingState) return;
 
@@ -210,7 +210,7 @@ class ViewReviews extends Component {
   }
 
   componentWillUnmount() {
-    <AuthChecker />
+    <LoginObject />
     document.removeEventListener("click", this.handleModalOpen);
     // Remove any suites with persisted likes first
     const allSuitesForSelectedCollege = this.removeAllFavoriteSuites(

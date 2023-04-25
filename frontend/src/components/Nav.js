@@ -6,7 +6,7 @@ import NavDropdownComponent from "src/components/ViewReviews/Nav/NavDropdownComp
 import NavDropdownMultiselect from "src/components/ViewReviews/Nav/NavDropdownMultiselect/NavDropdownMultiselect";
 import NavSearchBar from "src/components/ViewReviews/Nav/NavSearchBar/NavSearchBar";
 import { Bookmark, BoxArrowRight } from "react-bootstrap-icons";
-import AuthChecker from "../components/AuthChecker"
+import LoginObject from 'src/services/authentication/LoginObject'
 
 export default class Nav extends Component {
   constructor(props) {
@@ -19,12 +19,12 @@ export default class Nav extends Component {
 
   // Ensure that when the user clicks outside the navbar, you close it
   componentDidMount() {
-    <AuthChecker />
+    <LoginObject />
     document.addEventListener("mousedown", this.handleClickOutside);
   }
 
   componentWillUnmount() {
-    <AuthChecker />
+    <LoginObject />
     document.removeEventListener("mousedown", this.handleClickOutside);
   }
 
