@@ -6,10 +6,10 @@ import logo from "src/images/logo.png";
 
 const messages = [
     {
-        msg: "Rate and review Yale dorms",
+        msg: "Rate and review Yale dorms.",
     },
     {
-        msg: "Communicate which rooms you want",
+        msg: "Communicate which rooms you want.",
     },
     {
         msg: "Check noise, steep times, cleanliness, etc.",
