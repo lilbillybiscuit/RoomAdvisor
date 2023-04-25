@@ -27,6 +27,7 @@ export default class ReviewSubmittedReviews extends Component {
     }
 
     componentDidMount() {
+        <AuthChecker />
         const suitesRef = collection(db, "Suites");
         const q = query(
             suitesRef,

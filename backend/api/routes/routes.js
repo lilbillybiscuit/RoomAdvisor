@@ -51,7 +51,6 @@ module.exports = function(app) {
 
 
     var suitescontroller = require("@controllers/suites/suites");
-    app.route("/api/rooms/:id").get(suitescontroller.getRoomInfo);
     app.route("/api/suites/:id").get(suitescontroller.getSuiteInfo);
     app.route("/api/suites/:id").put(suitescontroller.modSuite);
     app.route("/api/suites/:id").delete(suitescontroller.delSuite);
@@ -59,12 +58,11 @@ module.exports = function(app) {
     app.route("/api/suites").post(suitescontroller.addSuite);
 
     var roomscontroller = require("@controllers/rooms/rooms");
-    // app.route("/api/rooms/:id").get(utilfunctions.returnSuccessNotImplemented); // TODO: Implement, move from suites
-    app.route("/api/rooms/:id").put(utilfunctions.returnSuccessNotImplemented);
-    app.route("/api/rooms/:id").delete(utilfunctions.returnSuccessNotImplemented);
-    app.route("/api/rooms").get(utilfunctions.returnSuccessNotImplemented);
-    app.route("/api/rooms").post(utilfunctions.returnSuccessNotImplemented);
-
+    app.route("/api/rooms/").get(roomscontroller.getRoomInfo);
+    app.route("/api/rooms/").post(roomscontroller.addRoom);
+    app.route("/api/rooms/:id").get(roomscontroller.getRooms);
+    app.route("/api/rooms/:id").put(roomscontroller.modRoom);
+    app.route("/api/rooms/:id").delete(roomscontroller.delRoom);
 
     var userscontroller = require("@controllers/users/users");
     app.route("/api/users/:id").get(utilfunctions.returnSuccessNotImplemented);
