@@ -48,13 +48,42 @@ module.exports = function(app) {
     app.route("/api/reviews/:id").get(utilfunctions.returnSuccessNotImplemented);
     app.route("/api/reviews/:id").put(utilfunctions.returnSuccessNotImplemented);
 
-
+    let dummy = (req, res) => {
+        res.json({
+            "id": "Pierson-123-AbCdEf",
+            "college": "Pierson",
+            "entryway": "D",
+            "suite_number": "12",
+            "accessible": false,
+            "pictures": [
+                "https://example.roomadvisor.io/f17cac40-8e85-4a67-b1cc-3f3ac185decf.jpg"
+            ],
+            "size": 900.0,
+            "owners": [
+                {
+                "user_id": "98765",
+                "name": "Alice Thompson",
+                "url": "https://example.roomadvisor.io/api/users/98765"
+                }
+            ],
+            "numpeople": 4,
+            "numdoubles": 1,
+            "numsingles": 2,
+            "rooms": [
+                "https://example.roomadvisor.io/api/rooms/10w9an",
+                "https://example.roomadvisor.io/api/rooms/0d9an2",
+                "https://example.roomadvisor.io/api/rooms/fjs9ak"
+            ]
+        });
+        return;
+    }
 
     var suitescontroller = require("@controllers/suites/suites");
     app.route("/api/suites/:id").get(suitescontroller.getSuiteInfo);
     app.route("/api/suites/:id").put(suitescontroller.modSuite);
     app.route("/api/suites/:id").delete(suitescontroller.delSuite);
-    app.route("/api/suites").get(suitescontroller.getSuites);
+    // app.route("/api/suites").get(suitescontroller.getSuites);
+    app.route("/api/suites").get(dummy);
     app.route("/api/suites").post(suitescontroller.addSuite);
 
     var roomscontroller = require("@controllers/rooms/rooms");

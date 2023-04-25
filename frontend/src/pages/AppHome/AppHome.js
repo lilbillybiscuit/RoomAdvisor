@@ -1,12 +1,12 @@
-import "src/pages/ViewReviewsPage/ViewReviewsPage.css";
+import "src/pages/AppHome/AppHome.css";
 import React, { Component } from "react";
 import Nav from "src/components/Nav";
 import Results from "src/components/ViewReviews/Results/Results";
 import { codeToCollege, collegesToCode } from "src/services/data/colleges";
 import CardsContainer from "src/components/ViewReviews/Suites/CardsContainer/CardsContainer";
 import ModalContainer from "src/components/ViewReviews/GeneralModal";
-import { db } from "src/services/firebase/firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+// import { db } from "src/services/firebase/firebase";
+// import { collection, getDocs, query, where } from "firebase/firestore";
 import { LoadingOverlay } from "@mantine/core";
 import floatingReview from "src/images/review_floating.png";
 import ReviewRoomModal from "src/components/ViewReviews/AddReview/ReviewRoomModal";
@@ -155,58 +155,101 @@ class ViewReviews extends Component {
     //     "A12A.meta.pictures": arrayUnion("Done")
     //   })
 
-    const suiteRef = collection(db, "Suites");
-    const q = query(
-      suiteRef,
-      where("buildingName", "==", collegesToCode(this.state.building.value))
-    );
-    var suiteData = [];
-    getDocs(q).then((data) => {
-      data.forEach((docs) => {
-        suiteData.push(docs.data());
-      });
+    // const suiteRef = collection(db, "Suites");
+    // const q = query(
+    //   suiteRef,
+    //   where("buildingName", "==", collegesToCode(this.state.building.value))
+    // );
+    // var suiteData = [];
+    // getDocs(q).then((data) => {
+    //   data.forEach((docs) => {
+    //     suiteData.push(docs.data());
+    //   });
 
-      const finalSuites = this.makeSuites(suiteData);
-      this.setState({
-        ...this.state,
-        allSuitesForSelectedCollege: finalSuites,
-        loading: false,
-      });
-    });
+    //   const finalSuites = this.makeSuites(suiteData);
+    //   this.setState({
+    //     ...this.state,
+    //     allSuitesForSelectedCollege: finalSuites,
+    //     loading: false,
+    //   });
+    // });
+
+    const apiUrl = `/api/suites`;
+    const queryParams = {
+      buildingName: collegesToCode(this.state.building.value),
+    };
+
+    fetch(apiUrl + "?" + new URLSearchParams(queryParams))
+      .then((response) => response.json())
+      .then((suiteData) => {
+        const finalSuites = this.makeSuites(suiteData);
+        this.setState({
+          ...this.state,
+          allSuitesForSelectedCollege: finalSuites,
+          loading: false,
+        });
+      })
+      .catch((error) => console.error(error));
+    
   }
 
   componentDidUpdate() {
     <LoginObject />
     // Handle building change here
     if (this.state.building === this.state.oldBuildingState) return;
+    
+    const apiUrl = `/api/suites`;
+    const queryParams = {
+      buildingName: collegesToCode(this.state.building.value),
+    };
 
-    const suiteRef = collection(db, "Suites");
-    const q = query(
-      suiteRef,
-      where("buildingName", "==", collegesToCode(this.state.building.value))
-    );
-    var suiteData = [];
-    getDocs(q).then((data) => {
-      data.forEach((docs) => {
-        suiteData.push(docs.data());
-      });
+    fetch(apiUrl + "?" + new URLSearchParams(queryParams))
+      .then((response) => response.json())
+      .then((suiteData) => {
+        const finalSuites = this.makeSuites(suiteData);
+        var suites = this.filterRoomSize(this.state.roomSizes, finalSuites);
+        suites = this.addFavoriteSuites(suites);
+        const noRoomsFound = suites.length;
 
-      const finalSuites = this.makeSuites(suiteData);
-      var suites = this.filterRoomSize(this.state.roomSizes, finalSuites);
-      suites = this.addFavoriteSuites(suites);
-      // No of suites found
-      const noRoomsFound = suites.length;
+        this.setState({
+          ...this.state,
+          allSuitesForSelectedCollege: finalSuites,
+          suites,
+          noRoomsFound,
+          searchItem: "",
+          oldBuildingState: this.state.building,
+          loading: false,
+        });
+      })
+      .catch((error) => console.error(error));
 
-      this.setState({
-        ...this.state,
-        allSuitesForSelectedCollege: finalSuites,
-        suites,
-        noRoomsFound,
-        searchItem: "",
-        oldBuildingState: this.state.building,
-        loading: false,
-      });
-    });
+    // const suiteRef = collection(db, "Suites");
+    // const q = query(
+    //   suiteRef,
+    //   where("buildingName", "==", collegesToCode(this.state.building.value))
+    // );
+    // var suiteData = [];
+    // getDocs(q).then((data) => {
+    //   data.forEach((docs) => {
+    //     suiteData.push(docs.data());
+    //   });
+
+    //   const finalSuites = this.makeSuites(suiteData);
+    //   var suites = this.filterRoomSize(this.state.roomSizes, finalSuites);
+    //   suites = this.addFavoriteSuites(suites);
+    //   // No of suites found
+    //   const noRoomsFound = suites.length;
+
+    //   this.setState({
+    //     ...this.state,
+    //     allSuitesForSelectedCollege: finalSuites,
+    //     suites,
+    //     noRoomsFound,
+    //     searchItem: "",
+    //     oldBuildingState: this.state.building,
+    //     loading: false,
+    //   });
+    // });
   }
 
   componentWillUnmount() {
