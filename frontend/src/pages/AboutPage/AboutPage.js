@@ -20,16 +20,3 @@ export default class AboutPage extends Component {
     );
   }
 }
-
-// function testSuite() {
-//   fetch("http://localhost:4000/api/suites", {
-//     credentials: "include"
-//   }).then(res => {
-//     if(res.status === 200) {
-//       console.log(res.json())
-//       return res.json()
-//     } 
-//   })
-// }
-
-// testSuite();

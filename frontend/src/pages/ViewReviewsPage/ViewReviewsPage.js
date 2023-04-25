@@ -14,6 +14,19 @@ import { HideOn } from "react-hide-on-scroll";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import LoginObject from 'src/services/authentication/LoginObject'
 
+// function testSuite() {
+//   fetch('/api/suites', {
+//     credentials: "include"
+//   }).then(res => {
+//     if(res.status === 200) {
+//       console.log(res.json())
+//       return res.json()
+//     } 
+//   })
+// }
+
+// testSuite();
+
 // TO DO
 
 class ViewReviews extends Component {
