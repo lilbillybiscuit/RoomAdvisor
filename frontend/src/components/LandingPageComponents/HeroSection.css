@@ -1,24 +1,109 @@
-img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: -1;
-}
-  
+@import url("https://fonts.googleapis.com/css2?family=Roboto&family=Rubik&family=Sniglet&display=swap");
+
 .hero-container {
-    background-image: none;
-    background-position: fixed;
-    background-size: 100%;
-    background-repeat: no-repeat;
-    height: 100vh;
+    min-height: calc(100vh - 80px);
     width: 100%;
     display: flex;
-    flex-flow: column wrap;
+    flex-direction: row;
+    background-image: url(http://localhost:3000/static/media/landing_page.7ec9c85….png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 100%;
+    box-sizing: border-box;
+}
+
+.landing-container {
+    height: fit-content;
+    min-width: fit-content;
+    max-width: 60%;
+    width: fit-content;
+    min-width: 35%;
+    display: flex;
     flex-direction: column;
-    align-items: left;
-    padding-left: 5%;
-    padding-top: 5%;
+    align-items: flex-start;
+    margin-left: 10vw;
+    margin-top: 10vh;
+    padding: 1.5rem;
+    background: white;
+    box-shadow: 0 4px 5px -3px rgb(160 160 160 / 20%),
+    0 6px 10px 1px rgb(160 160 160 / 14%), 0 2px 14px 2px rgb(160 160 160 / 12%);
+    border-radius: 0.5rem;
+    animation: bobble 2s ease-in-out infinite;
+}
+
+.landing-messages-container {
+    list-style-type: circle;
+    margin-left: 0;
+    padding-right: 0;
+    margin: 5px 0 15px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.landing-messages-container li {
+    list-style: circle;
+    position: relative;
+    padding: 0 0 0 20px;
+    font-family: "Rubik", sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    padding: 0 !important;
+    margin: 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+/** Buttons (Login button, About Page button) **/
+
+.landing-buttons-wrapper {
+    margin-top: 1rem;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.landing-buttons-wrapper button {
+    flex: 2;
+    height: 100%;
+    width: 100%;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    color: white;
+    box-shadow: inset 0 -0.6em 0 -0.4em #2e2e2e2b;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+button,
+input[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Rubik", sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    filter: brightness(1.1);
+    transition: 0.2s ease;
+}
+
+button:active,
+input[type="submit"]:active {
+    filter: brightness(0.95);
+    transition: 0.1s ease;
 }
 
 .hero-container > h1 {
@@ -80,8 +165,16 @@ img {
 /* For small screens */
 @media (max-width: 768px) {
     .hero-container {
+        background: #e4edf9;
         padding: 10px 0 0 0;
         margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .landing-container {
+        margin-left: 0;
     }
 
     .hero-container h1 {
@@ -90,10 +183,12 @@ img {
         text-align: center;
     }
 
-    .hero-container p {
-        display: none;
+    .landing-container p {
+        text-align: left;
+        white-space: inherit;
+        overflow: hidden;
+        text-overflow: unset;
     }
-
     /* use mobile hero container */
     .mobile-para {
         font-family: Lato, Helvetica, sans-serif;
@@ -118,4 +213,14 @@ img {
     }
 }
 
-
+@keyframes bobble {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,14 @@
+.footer-container {
+    min-height: fit-content;
+    height: 70px;
+    width: 100vw;
+    bottom: 0;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #e4edf9;
+    z-index: 999999;
+}
+
