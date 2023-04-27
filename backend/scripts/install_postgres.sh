@@ -113,8 +113,8 @@ else
     # Create the database user and set its password
     sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASS';"
     echo "User '$DB_USER' created successfully with password '$DB_PASS'."
-    # Grant all privileges to the user on the database
-    sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
+    # change owner of database
+    sudo -u postgres psql -c "ALTER DATABASE $DB_NAME OWNER TO $DB_USER;"
     echo "Privileges granted successfully."
 fi
 
