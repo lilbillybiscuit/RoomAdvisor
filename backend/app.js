@@ -39,7 +39,6 @@ if (isProduction) {
             resave: false,
             saveUninitialized: true,
             secure: true,
-            httpOnly: true,
             cookie: {
                 maxAge: config.session.cookie.maxAge,
                 secure: config.session.cookie.secure,
