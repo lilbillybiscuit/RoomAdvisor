@@ -98,7 +98,6 @@ jobs:
                 cd /home/ubuntu/backend
                 cp /home/ubuntu/server-specific/config.js /home/ubuntu/backend/config.js
 
-
       - name: Create databases
         uses: appleboy/ssh-action@master
         with:

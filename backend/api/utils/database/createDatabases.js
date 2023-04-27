@@ -64,13 +64,17 @@ const createImagesTable = () => {
     return pool.query(queryText);
 };
 
-// execute all table creation queries
-Promise.all([
-    createUsersTable(),
-    createReviewsTable(),
-    createCommentsTable(),
-    // createImagesTable()
-])
-    .then(() => console.log('Tables created successfully'))
-    .catch(error => console.error('Error creating tables', error))
-    .finally(() => pool.end());
+// execute all table creation queries sequentially
+const start = async () => {
+    console.log("Starting table creation...");
+}
+
+start()
+    .then(createUsersTable)
+    .then(createReviewsTable)
+    .then(createCommentsTable)
+    // .then(createImagesTable)
+    .then(() => {
+        console.log("All tables created successfully!");
+        pool.end();
+    })
