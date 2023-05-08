@@ -42,7 +42,7 @@
     "@devexpress/dx-react-chart-material-ui": "^3.0.2",
     "@devexpress/dx-react-core": "^3.0.2",
     "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
+    "@emotion/styled": "^11.11.0",
     "@mantine/core": "^4.1.3",
     "@mantine/hooks": "^4.1.3",
     "@material-ui/core": "^4.12.4",
