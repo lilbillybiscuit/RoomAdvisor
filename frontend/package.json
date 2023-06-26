@@ -59,7 +59,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-scripts": "^5.0.0",
     "react-select": "^5.2.2",
-    "recharts": "^2.1.9",
+    "recharts": "^2.7.2",
     "standard": "^16.0.4"
   }
 }
